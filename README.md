@@ -62,6 +62,5 @@ robots.txt, sitemap.xml    Google-এর জন্য
 
 ## কৃতজ্ঞতা
 
-- ছবি — **Click by : Joydweep Das**
 - ফেসবুক — লক্ষ্মীপূজা পেজ (Subhankar Patra) · Dojala পেজ (Joydweep Das)
 - **Designed & Deployed by Suman Mahata** — https://suman876-ops.github.io/suman-portfolio/
