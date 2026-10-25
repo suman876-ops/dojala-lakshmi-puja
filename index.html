@@ -237,7 +237,8 @@
     <div class="form-grid">
       <div class="card tilt reveal">
         <div class="field"><label for="upName">ক্যাপশন</label><input id="upName" type="text" placeholder="যেমন: মণ্ডপে মা লক্ষ্মী" maxlength="60"></div>
-        <div class="field"><label>ছবি বেছে নিন</label><label class="file-drop" for="upFile">এখানে ক্লিক করে ছবি নির্বাচন করুন</label><input id="upFile" type="file" accept="image/*" hidden></div>
+        <div class="field"><label>ছবি বেছে নিন</label><label class="file-drop" for="upFile" id="upDrop">এখানে ক্লিক করে ছবি নির্বাচন করুন</label><input id="upFile" type="file" accept="image/*" hidden></div>
+        <div class="up-prev" id="upPreview" hidden></div>
         <button class="btn btn-red" id="upSubmit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>ছবি আপলোড করুন</button>
         <p class="hint" style="margin-top:12px">নোট: ছবি আপলোড করলেই সঙ্গে সঙ্গে নিচের গ্যালারিতে সবার কাছে দেখা যাবে।</p>
       </div>
