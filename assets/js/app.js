@@ -297,8 +297,11 @@
   }
 
   /* ---------- music player ---------- */
+  var musicInit = false;
   function music() {
     var a = $("audio"); if (!a) return;
+    if (musicInit) return;
+    musicInit = true;
     var list = (DATA.songs && DATA.songs.length) ? DATA.songs : ((DATA.song && DATA.song.src) ? [DATA.song] : []);
     var idx = 0;
     function cur() { return list[idx] || { title: "কোনো গান চলছে না", artist: "" }; }
@@ -334,6 +337,7 @@
     if ($("prevBtn")) $("prevBtn").addEventListener("click", function () { step(-1); });
     if ($("nextBtn")) $("nextBtn").addEventListener("click", function () { step(1); });
     a.addEventListener("play", icon); a.addEventListener("pause", icon);
+    a.addEventListener("error", function () { toast("গানটি লোড করা যায়নি — একটু পরে আবার চেষ্টা করুন।"); });
     a.addEventListener("ended", function () { if (list.length > 1) step(1); else icon(); });
     a.addEventListener("timeupdate", function () {
       var p = a.duration ? (a.currentTime / a.duration * 100) : 0;
