@@ -71,6 +71,13 @@ section{position:relative;padding:clamp(64px,9vw,116px) 0}
 .load-flame i{position:absolute;inset:0;margin:auto;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
   background:radial-gradient(circle at 50% 70%,#fff5d6,#f0c869 45%,#c62a30 95%);box-shadow:0 0 40px rgba(240,200,105,.7)}
 .load-txt{margin-top:26px;font-family:var(--disp);color:var(--gold);letter-spacing:.24em;font-size:.82rem;text-align:center}
+.ld-wrap{text-align:center;padding:0 20px}
+.ld-init{margin-top:22px;font-family:var(--body);font-weight:600;font-size:clamp(.7rem,2.6vw,.92rem);letter-spacing:.4em;color:var(--gold3);text-transform:uppercase;animation:ldPulse 1.6s ease-in-out infinite}
+.ld-bar{width:min(220px,62vw);height:3px;margin:16px auto 0;border-radius:3px;background:rgba(58,33,24,.15);overflow:hidden}
+.ld-bar i{display:block;height:100%;width:42%;border-radius:3px;background:linear-gradient(90deg,var(--gold3),var(--red));animation:ldSlide 1.25s ease-in-out infinite}
+.ld-sub{margin-top:15px;font-family:var(--disp);color:var(--gold);letter-spacing:.26em;font-size:.72rem;opacity:.85}
+@keyframes ldPulse{0%,100%{opacity:.42}50%{opacity:1}}
+@keyframes ldSlide{0%{transform:translateX(-115%)}100%{transform:translateX(265%)}}
 @keyframes lf{0%,100%{transform:scale(1)}50%{transform:scale(1.12) rotate(2deg)}}
 
 /* ---------- nav ---------- */
