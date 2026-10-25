@@ -214,7 +214,7 @@
     if (String(yearSel) === String(new Date().getFullYear())) {
       var vp = DATA.visitorPhotos || [];
       cards = cards.concat(vp.slice().reverse().map(function (p, i) {
-        return card({ src: p.src, caption: p.name || "", tag: "দর্শকের ছবি", tagType: "live" }, vp.length - 1 - i, "visitor");
+        return card({ src: p.src, caption: p.name || "", tag: "এই বছর", tagType: "live" }, vp.length - 1 - i, "visitor");
       }));
     }
     g.innerHTML = cards.length ? cards.join("")
