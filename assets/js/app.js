@@ -286,6 +286,16 @@
     r.readAsDataURL(file);
   }
 
+  function shrinkBlob(file) {
+    return new Promise(function (res) {
+      shrinkImage(file, function (blob) {
+        var out = blob;
+        try { if (blob && !(blob instanceof File)) out = new File([blob], "photo.jpg", { type: "image/jpeg" }); } catch (e) { out = file; }
+        res(out);
+      });
+    });
+  }
+
   /* ---------- music player ---------- */
   function music() {
     var a = $("audio"); if (!a) return;
@@ -404,7 +414,7 @@
       readImage(f, function (d) { $("upFile")._data = d; });
     });
     if ($("upSubmit")) $("upSubmit").addEventListener("click", function () {
-      var n = $("upName").value.trim(); if (!n) return flash("upName");
+      var n = $("upName").value.trim();
       if (SB_ON) {
         var file = $("upFile")._file;
         if (!file) return toast("আগে একটি ছবি বেছে নিন।");
@@ -507,21 +517,34 @@
       if (!admFiles.length) return admMsg("আগে ধাপ ৩-এ একটি ছবি বেছে নিন।", false);
       if (!arr) return admMsg("ভুল বিভাগ।", false);
       var files = admFiles.slice();
-      var tooBig = files.filter(function (f) { return f.size > 8 * 1024 * 1024; });
-      if (tooBig.length) return admMsg("কিছু ছবি ৮ MB-এর চেয়ে বড় — সেগুলো বাদ দিন।", false);
+      var tooBig = files.filter(function (f) { return f.size > 25 * 1024 * 1024; });
+      if (tooBig.length) return admMsg("কিছু ছবি অনেক বড় — সেগুলো বাদ দিন।", false);
       if (SB_ON) {
         var parts = cat.split(".");
         var category = parts[0] === "gallery" ? parts[1] : "puja";
         var year = parts[0] === "year" ? parseInt(parts[1], 10) : null;
-        admMsg("আপলোড হচ্ছে... একটু অপেক্ষা করুন।", true);
-        Promise.all(files.map(function (f) {
-          return SB.upload(f, "gallery").then(function (url) {
-            return SB.addPhoto({ url: url, caption: cap || "", tag: "", tag_type: "live", category: category, year: year, sort: Date.now() });
+        var run = function () {
+          var chain = Promise.resolve();
+          files.forEach(function (f, i) {
+            chain = chain.then(function () {
+              admMsg("আপলোড হচ্ছে... (" + toBn(i + 1) + "/" + toBn(files.length) + ")", true);
+              return shrinkBlob(f).then(function (out) {
+                return SB.upload(out, "gallery").then(function (url) {
+                  return SB.addPhoto({ url: url, caption: cap || "", tag: "", tag_type: "live", category: category, year: year, sort: Date.now() + i });
+                });
+              });
+            });
           });
-        })).then(function () { return refreshFromSB(); }).then(function () {
-          admFiles = []; renderAdmPreview(); $("admCap").value = "";
-          admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
-        }).catch(function (e) { admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : ""), false); });
+          chain.then(function () { return refreshFromSB(); }).then(function () {
+            admFiles = []; renderAdmPreview(); $("admCap").value = "";
+            admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
+          }).catch(function (e) { admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); });
+        };
+        admMsg("যাচাই করা হচ্ছে...", true);
+        SB.currentUser().then(function (u) {
+          if (!u) { admMsg("লগইন শেষ হয়ে গেছে — আবার পাসওয়ার্ড দিয়ে লগইন করে চেষ্টা করুন।", false); return; }
+          run();
+        }).catch(function () { run(); });
         return;
       }
       var done = 0;
@@ -603,8 +626,8 @@
   }
 
   function admListFor(cat) {
-    if (cat.indexOf("gallery.") === 0) return DATA.gallery[cat.split(".")[1]];
-    if (cat.indexOf("year.") === 0) return DATA.years[cat.split(".")[1]];
+    if (cat.indexOf("gallery.") === 0) { var g = cat.split(".")[1]; DATA.gallery[g] = DATA.gallery[g] || []; return DATA.gallery[g]; }
+    if (cat.indexOf("year.") === 0) { var y = cat.split(".")[1]; DATA.years[y] = DATA.years[y] || []; return DATA.years[y]; }
     return null;
   }
   function cleanPhotos() {
