@@ -120,6 +120,23 @@
     });
   }
 
+  /* ---------- countdown ---------- */
+  function cdTarget() {
+    if (DATA.countdownTarget) { var t = new Date(DATA.countdownTarget).getTime(); if (!isNaN(t)) return t; }
+    var d = new Date(); d.setHours(19, 0, 0, 0); return d.getTime();
+  }
+  function tick() {
+    var d = cdTarget() - Date.now();
+    if (d < 0) d = 0;
+    var days = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4), s = Math.floor(d % 6e4 / 1e3);
+    if ($("cd-d")) $("cd-d").textContent = toBn(pad(days));
+    if ($("cd-h")) $("cd-h").textContent = toBn(pad(h));
+    if ($("cd-m")) $("cd-m").textContent = toBn(pad(m));
+    if ($("cd-s")) $("cd-s").textContent = toBn(pad(s));
+    var st = $("cdStatus");
+    if (st) { if (d <= 0) { st.textContent = "ঘট উত্তোলন শুরু হয়েছে"; st.classList.add("live"); } else { st.textContent = ""; st.classList.remove("live"); } }
+  }
+
   /* ---------- nav ---------- */
   function nav() {
     if ($("menuBtn")) $("menuBtn").addEventListener("click", function () { $("navLinks").classList.toggle("open"); });
@@ -556,6 +573,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     embers(); parallax(); nav(); clock(); events();
     loadData();
+    tick(); setInterval(tick, 1000);
     setTimeout(hideLoader, 650);
     setTimeout(revealAll, 1800);
   });
