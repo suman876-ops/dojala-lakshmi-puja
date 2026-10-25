@@ -4,7 +4,7 @@
    ========================================================================== */
 window.SITE_DEFAULT = {
   version: 4,
-  adminPassword: "dojala2026",
+  adminPassword: "dojala@2026",
   countdownTarget: "",
 
   announcements: [],
