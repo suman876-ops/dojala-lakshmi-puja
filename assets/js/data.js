@@ -45,7 +45,7 @@ window.SITE_DEFAULT = {
   song: {
     title: "শঙ্খ বাজিয়ে মাকে",
     artist: "সন্ধ্যা মুখোপাধ্যায়",
-    src: "assets/audio/song.mp3"
+    src: "assets/audio/puja-song.mp3"
   },
 
   facebook: {
