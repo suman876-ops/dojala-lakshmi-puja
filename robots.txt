@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suman876-ops.github.io/dojala-lakshmi-puja/sitemap.xml
