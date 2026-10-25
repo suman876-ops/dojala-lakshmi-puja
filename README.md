@@ -138,6 +138,28 @@ create policy "anon_upload_bucket" on storage.objects for insert to anon with ch
 
 ---
 
+## নিরাপত্তা (Security)
+
+এই সাইটে নেওয়া নিরাপত্তা ব্যবস্থা:
+
+- **অ্যাডমিন লগইন** Supabase Auth দিয়ে যাচাই হয়; পাসওয়ার্ড কোডে রাখা নেই।
+- **Row Level Security** সব টেবিলে চালু। পড়া সবার জন্য, কিন্তু **লেখা/মোছা শুধু
+  অ্যাডমিন অ্যাকাউন্টের** (auth.uid() দিয়ে বাঁধা) — কেউ নতুন অ্যাকাউন্ট খুললেও
+  ছবি/ঘোষণা বদলাতে পারবে না।
+- **দর্শকের আপলোড** আলাদা `visitor` bucket-এ — শুধু ছবি (JPG/PNG/WEBP) ও ৫ MB
+  সীমা। অ্যাডমিনের `photos` bucket-এ বাইরে থেকে কেউ লিখতে পারে না।
+- **দৈর্ঘ্য সীমা** — ঘোষণা ৫০০, শুভেচ্ছা ৬০০, নাম ৮০, ক্যাপশন ১৪০ অক্ষর।
+- **XSS সুরক্ষা** — দর্শকের লেখা/নাম সব `esc()` দিয়ে নিরাপদে দেখানো হয়।
+- **Content-Security-Policy** যোগ করা — অননুমোদিত স্ক্রিপ্ট/সোর্স ব্লক।
+- সব ট্রাফিক **HTTPS**-এ।
+
+### ড্যাশবোর্ডে করে নিন (আমি MCP দিয়ে করতে পারি না)
+1. **Authentication → Sign In / Providers → Email → “Allow new users to sign up” বন্ধ করুন।**
+2. **Authentication → Passwords → Leaked password protection চালু করুন।**
+3. অ্যাডমিন পাসওয়ার্ড আরও শক্ত করে নিন (১২+ অক্ষর, অক্ষর + সংখ্যা + চিহ্ন)।
+
+---
+
 ## কৃতজ্ঞতা
 
 - ফেসবুক — লক্ষ্মীপূজা পেজ (Subhankar Patra) · Dojala পেজ (Joydweep Das)
