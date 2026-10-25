@@ -154,9 +154,11 @@ create policy "anon_upload_bucket" on storage.objects for insert to anon with ch
 - সব ট্রাফিক **HTTPS**-এ।
 
 ### ড্যাশবোর্ডে করে নিন (আমি MCP দিয়ে করতে পারি না)
-1. **Authentication → Sign In / Providers → Email → “Allow new users to sign up” বন্ধ করুন।**
-2. **Authentication → Passwords → Leaked password protection চালু করুন।**
-3. অ্যাডমিন পাসওয়ার্ড আরও শক্ত করে নিন (১২+ অক্ষর, অক্ষর + সংখ্যা + চিহ্ন)।
+1. **Authentication → Passwords → Leaked password protection চালু করুন।**
+2. অ্যাডমিন পাসওয়ার্ড আরও শক্ত করে নিন (১২+ অক্ষর, অক্ষর + সংখ্যা + চিহ্ন)।
+
+> নতুন ইউজার **সাইন-আপ ডেটাবেস লেভেলে বন্ধ** করা আছে (`auth.users`-এ ট্রিগার) —
+> অ্যাডমিন ইমেইল ছাড়া কেউ নতুন অ্যাকাউন্ট বানাতে পারবে না।
 
 ---
 
