@@ -3,33 +3,41 @@
    অ্যাডমিন প্যানেল থেকে করা পরিবর্তন data.json-এ সংরক্ষিত হয়।
    ========================================================================== */
 window.SITE_DEFAULT = {
-  version: 1,
+  version: 2,
   adminPassword: "dojala2026",
   countdownTarget: "2027-10-14T18:00:00+05:30",
 
   announcements: [
     { text: "কোজাগরী পূর্ণিমায় সন্ধ্যা ৬টা থেকে মণ্ডপে মা লক্ষ্মীর আরাধনা শুরু। সবাইকে আসার অনুরোধ।", date: "আজ" },
     { text: "প্রতিমা গড়ার কাজ শুরু হয়েছে — কমিটির সদস্যরা সময় দিলে ভালো হয়।", date: "এই সপ্তাহে" },
-    { text: "নতুন ছবি যুক্ত হয়েছে গ্যালারিতে — সবাই দেখে নিন। Click by: Joydweep Das", date: "সাম্প্রতিক" }
+    { text: "নতুন ছবি যুক্ত হয়েছে গ্যালারিতে — সবাই দেখে নিন।", date: "সাম্প্রতিক" }
   ],
 
   photos: {
-    p1: { src: "assets/img/p1.webp", caption: "মণ্ডপে মা লক্ষ্মী",        credit: "Click by — Joydweep Das" },
-    p2: { src: "assets/img/p2.webp", caption: "রাতের আরাধনা ও প্রতিমা",   credit: "Click by — Joydweep Das" },
-    p3: { src: "assets/img/p3.webp", caption: "শোভাযাত্রায় মা লক্ষ্মী",   credit: "Click by — Joydweep Das" },
-    p4: { src: "assets/img/p4.webp", caption: "পুরোহিতের পূজা",          credit: "Click by — Joydweep Das" },
-    p5: { src: "assets/img/p5.webp", caption: "ভক্তের প্রণাম",            credit: "Click by — Joydweep Das" },
-    p6: { src: "assets/img/p6.webp", caption: "কমিটির সদস্যবৃন্দ",        credit: "Click by — Joydweep Das" },
-    p7: { src: "assets/img/p7.webp", caption: "পূজার আগে কমিটি",          credit: "Click by — Joydweep Das" }
+    p1:  { src: "assets/img/p1.webp",  caption: "মণ্ডপে মা লক্ষ্মী" },
+    p2:  { src: "assets/img/p2.webp",  caption: "রাতের আরাধনা ও প্রতিমা" },
+    p3:  { src: "assets/img/p3.webp",  caption: "শোভাযাত্রায় মা লক্ষ্মী" },
+    p4:  { src: "assets/img/p4.webp",  caption: "পুরোহিতের পূজা" },
+    p5:  { src: "assets/img/p5.webp",  caption: "ভক্তের প্রণাম" },
+    p6:  { src: "assets/img/p6.webp",  caption: "কমিটির সদস্যবৃন্দ" },
+    p7:  { src: "assets/img/p7.webp",  caption: "পূজার আগে কমিটি" },
+    p8:  { src: "assets/img/p8.webp",  caption: "মণ্ডপ সাজে মা লক্ষ্মী" },
+    p9:  { src: "assets/img/p9.webp",  caption: "রাতের ভোগ বিতরণ" },
+    p10: { src: "assets/img/p10.webp", caption: "মণ্ডপে ছোট্ট ভক্তেরা" },
+    p11: { src: "assets/img/p11.webp", caption: "গ্রামের মানুষের ভিড়" },
+    p12: { src: "assets/img/p12.webp", caption: "ভোগের রান্নার আয়োজন" },
+    p13: { src: "assets/img/p13.webp", caption: "আলোয় ছোট্ট মুখগুলো" },
+    p14: { src: "assets/img/p14.webp", caption: "মণ্ডপে রান্নার তৎপরতা" },
+    p15: { src: "assets/img/p15.webp", caption: "পূর্ণিমার রাতে মা লক্ষ্মী" }
   },
 
   gallery: {
-    puja:      ["p1", "p2", "p3", "p4", "p5"],
+    puja:      ["p1", "p2", "p3", "p4", "p5", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15"],
     committee: ["p6", "p7"]
   },
 
   years: {
-    "2025": ["p1", "p2", "p3", "p4", "p5", "p6", "p7"],
+    "2025": ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15"],
     "2024": [], "2023": [], "2022": [], "2021": [], "2020": []
   },
 
