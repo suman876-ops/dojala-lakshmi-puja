@@ -14,10 +14,11 @@ data.json                  অ্যাডমিনের সংরক্ষি�
 assets/
   css/style.css            পুরো ডিজাইন (থ্রিডি, অ্যানিমেশন, রেসপন্সিভ)
   js/data.js               ডিফল্ট কনটেন্ট (ছবি, ঘোষণা, গান)
-  js/app.js                কাউন্টডাউন, গ্যালারি, গান, অ্যাডমিন — সব লজিক
-  img/p1..p7.webp          পূজার ছবি (Click by — Joydweep Das)
+  js/app.js                গ্যালারি, গান, লাইভ ঘড়ি, অ্যাডমিন — সব লজিক
+  img/p1..p15.webp         ১৫টি পূজার ছবি
   audio/song.mp3           পূজার গান — শঙ্খ বাজিয়ে মাকে
   favicon.svg              আইকন
+  floral.svg               সাদা অংশের ফুলের ওয়াটারমার্ক
 robots.txt, sitemap.xml    Google-এর জন্য
 ```
 
