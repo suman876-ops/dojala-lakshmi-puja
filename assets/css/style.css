@@ -15,10 +15,10 @@
   --glow:0 0 60px rgba(242,200,106,.20);
   --cream:#f7f1e2; --cream2:#efe5cf; --ltext:#3a2118; --ldim:#7d6c58; --lred:#b3121a; --lline:rgba(58,33,24,.16);
   --r:24px; --r-sm:14px; --maxw:1200px;
-  --disp:'Baloo Da 2',cursive;
+  --disp:'Anek Bangla','Noto Sans Bengali',system-ui,sans-serif;
   --head:'Noto Serif Bengali',serif;
   --title:'Tiro Bangla',serif;
-  --serif:'Playfair Display',serif;
+  --serif:'Playfair Display','Noto Serif Bengali',serif;
   --body:'Hind Siliguri',system-ui,-apple-system,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -27,7 +27,7 @@ body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.78;backgrou
 img{max-width:100%;display:block}
 a{color:var(--gold3);text-decoration:none}
 button{font-family:inherit}
-h1,h2,h3,h4{margin:0;font-family:var(--head);font-weight:700;line-height:1.3;letter-spacing:.004em}
+h1,h2,h3,h4{margin:0;font-family:var(--head);font-weight:700;line-height:1.45;letter-spacing:.004em}
 ::selection{background:var(--gold);color:#241703}
 ::-webkit-scrollbar{width:11px}
 ::-webkit-scrollbar-track{background:#080c1c}
@@ -76,8 +76,8 @@ section{position:relative;padding:clamp(64px,9vw,116px) 0}
 .nav-inner{max-width:var(--maxw);margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:14px}
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto;min-width:0}
 .brand .mark{width:44px;height:44px;flex:none;filter:drop-shadow(0 4px 14px rgba(240,200,105,.4))}
-.brand b{font-family:var(--disp);font-size:1.16rem;color:var(--ink);display:block;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.brand small{display:block;color:var(--gold);font-size:.7rem;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand b{font-family:var(--disp);font-size:clamp(.84rem,3.7vw,1.16rem);color:var(--ink);display:block;line-height:1.45;white-space:normal;overflow:visible}
+.brand small{display:block;color:var(--gold);font-size:clamp(.56rem,2.5vw,.7rem);letter-spacing:.05em;line-height:1.6;white-space:normal;overflow:visible}
 .nav-links{display:flex;gap:2px;align-items:center}
 .nav-links a{position:relative;color:var(--dim);font-size:.95rem;padding:9px 13px;border-radius:10px;transition:.25s;white-space:nowrap}
 .nav-links a::after{content:"";position:absolute;left:13px;right:13px;bottom:4px;height:2px;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .3s}
@@ -117,7 +117,7 @@ section{position:relative;padding:clamp(64px,9vw,116px) 0}
 .card p{color:var(--dim);margin:.7rem 0}
 
 .btn{position:relative;display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:15px;
-  font-weight:600;font-size:1rem;cursor:pointer;border:1px solid transparent;transition:.28s;overflow:hidden;text-decoration:none}
+  font-weight:600;font-size:1rem;line-height:1.45;cursor:pointer;border:1px solid transparent;transition:.28s;overflow:hidden;text-decoration:none}
 .btn svg{width:18px;height:18px}
 .btn::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);transform:translateX(-130%);transition:.6s}
 .btn:hover::before{transform:translateX(130%)}
@@ -154,7 +154,7 @@ canvas#embers{position:absolute;inset:0;width:100%;height:100%}
   background:linear-gradient(180deg,var(--glass-hi),rgba(255,255,255,.015)),var(--glass);
   backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);
   border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.12);transform-style:preserve-3d}
-.hero h1{font-family:var(--title);font-weight:400;font-size:clamp(2.1rem,7vw,4.6rem);color:var(--ink);text-shadow:0 10px 40px rgba(0,0,0,.7);line-height:1.22}
+.hero h1{font-family:var(--title);font-weight:400;font-size:clamp(2.1rem,7vw,4.6rem);color:var(--ink);text-shadow:0 10px 40px rgba(0,0,0,.7);line-height:1.34}
 .hero h1 .g{background:linear-gradient(180deg,var(--gold3),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .latin{font-family:var(--disp);color:var(--gold);letter-spacing:.22em;font-size:clamp(.82rem,2.4vw,1.12rem);text-transform:uppercase;margin-top:12px}
 .hero .loc{margin-top:14px;color:var(--dim);display:inline-flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap}
@@ -207,7 +207,7 @@ canvas#embers{position:absolute;inset:0;width:100%;height:100%}
 .gitem img{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.3,1)}
 .gitem:hover{box-shadow:0 34px 60px -26px rgba(0,0,0,.9)}
 .gitem:hover img{transform:scale(1.09)}
-.gitem .cap{position:absolute;inset:auto 0 0 0;padding:30px 13px 11px;background:linear-gradient(0deg,rgba(4,6,15,.95),transparent);font-size:.88rem;color:var(--ink)}
+.gitem .cap{position:absolute;inset:auto 0 0 0;padding:30px 13px 11px;background:linear-gradient(0deg,rgba(4,6,15,.95),transparent);font-size:.88rem;line-height:1.45;color:var(--ink)}
 .gitem .zoom{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:10px;background:rgba(4,6,15,.55);backdrop-filter:blur(6px);border:1px solid var(--line);display:grid;place-items:center;opacity:0;transform:translateY(-6px);transition:.3s}
 .gitem:hover .zoom{opacity:1;transform:none}
 .gitem .zoom svg{width:16px;height:16px;stroke:var(--gold)}
@@ -241,7 +241,7 @@ canvas#embers{position:absolute;inset:0;width:100%;height:100%}
 .pb-disc svg{width:20px;height:20px;fill:var(--gold3)}
 .pb-info{flex:1;min-width:0}
 .pb-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
-.pb-title{font-family:var(--head);font-size:1.12rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-title{font-family:var(--head);font-size:1.12rem;color:var(--ink);line-height:1.4;white-space:normal;overflow:visible;overflow-wrap:break-word}
 .pb-sub{color:var(--dim);font-size:.85rem;margin-bottom:9px}
 .bar{height:6px;border-radius:6px;background:rgba(255,255,255,.14);position:relative;cursor:pointer;overflow:hidden}
 .bar .fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--gold3),var(--red));border-radius:6px}
@@ -274,8 +274,8 @@ canvas#embers{position:absolute;inset:0;width:100%;height:100%}
 .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px}
 .msg{background:linear-gradient(180deg,rgba(240,200,105,.12),rgba(240,200,105,.02));border:1px solid var(--line);border-radius:17px;padding:17px;backdrop-filter:blur(10px);transition:.3s}
 .msg:hover{transform:translateY(-4px);border-color:var(--gold)}
-.msg .who{font-family:var(--head);color:var(--gold3);font-size:1.06rem}
-.msg p{margin:.45rem 0 0;font-size:.95rem}
+.msg .who{font-family:var(--head);color:var(--gold3);font-size:1.06rem;line-height:1.5}
+.msg p{margin:.45rem 0 0;font-size:.95rem;line-height:1.7}
 .msg .dt{font-size:.75rem;color:var(--dim);margin-top:9px}
 .file-drop{display:block;border:1.5px dashed var(--line-gold);border-radius:15px;padding:26px;text-align:center;color:var(--dim);cursor:pointer;background:rgba(255,255,255,.03);backdrop-filter:blur(8px);transition:.25s}
 .file-drop:hover{border-color:var(--gold);color:var(--gold3);background:rgba(240,200,105,.08)}
@@ -385,12 +385,12 @@ footer .socials a:hover{background:rgba(240,200,105,.2);transform:translateY(-3p
 .hero .hero-inner{max-width:920px;margin:0 auto;background:none;border:0;box-shadow:none;backdrop-filter:none;padding:0}
 .hero-eyebrow{display:inline-block;font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);
   border:1px solid var(--line-gold);padding:8px 20px;border-radius:30px;background:rgba(242,200,106,.08);backdrop-filter:blur(8px)}
-.hero .hero-title{font-family:var(--title);font-weight:400;font-size:clamp(2.5rem,8.6vw,5.8rem);line-height:1.12;color:var(--gold3);margin:22px 0 0;
+.hero .hero-title{font-family:var(--title);font-weight:400;font-size:clamp(2.5rem,8.6vw,5.8rem);line-height:1.3;color:var(--gold3);margin:22px 0 0;
   text-shadow:0 0 44px rgba(242,200,106,.45),0 10px 44px rgba(0,0,0,.85)}
 .hero .latin{font-family:var(--serif);font-style:italic;color:var(--gold);letter-spacing:.3em;font-size:clamp(.78rem,2.2vw,1.05rem);text-transform:uppercase;margin-top:14px}
 .infoboxes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:32px 0 4px}
 .ib{min-width:108px;padding:16px 14px;border-radius:16px;background:rgba(18,9,12,.5);backdrop-filter:blur(12px);border:1px solid var(--line-gold);box-shadow:inset 0 1px 0 rgba(255,255,255,.09)}
-.ib b{font-family:var(--head);font-size:clamp(1rem,3.3vw,1.45rem);color:var(--gold3);display:block;line-height:1.3}
+.ib b{font-family:var(--head);font-size:clamp(1rem,3.3vw,1.45rem);color:var(--gold3);display:block;line-height:1.4}
 .ib span{font-size:.76rem;color:var(--dim);letter-spacing:.06em}
 .hero .hero-tag{margin-top:18px;color:var(--dim);font-size:.98rem}
 .hero .hero-tag b{color:var(--gold3)}
@@ -421,7 +421,7 @@ footer .socials a:hover{background:rgba(240,200,105,.2);transform:translateY(-3p
 /* ---- gallery showcase ---- */
 .showcase-sec{padding:clamp(64px,8vw,110px) 0}
 .showcase-head{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;flex-wrap:wrap;margin-bottom:34px}
-.showcase-title{font-family:var(--serif);font-weight:700;line-height:1.06;font-size:clamp(2rem,5.6vw,3.6rem);margin:0}
+.showcase-title{font-family:var(--serif);font-weight:700;line-height:1.3;font-size:clamp(2rem,5.6vw,3.6rem);margin:0}
 .showcase-title .l1{color:var(--ltext);display:block}
 .showcase-title .l2{color:var(--lred);font-style:italic;display:block}
 .showcase-actions{display:flex;gap:12px;flex-wrap:wrap}
@@ -521,7 +521,7 @@ footer.light .addr{margin-top:14px;color:var(--ldim);font-size:.9rem;letter-spac
   background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02)),rgba(18,9,12,.5);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line-gold);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 34px -22px rgba(0,0,0,.9)}
-.cd .num{font-family:var(--disp);font-size:clamp(1.8rem,6vw,2.8rem);color:var(--gold3);line-height:1;font-variant-numeric:tabular-nums}
+.cd .num{font-family:var(--disp);font-size:clamp(1.8rem,6vw,2.8rem);color:var(--gold3);line-height:1.2;font-variant-numeric:tabular-nums}
 .cd .lbl{font-size:.8rem;color:var(--dim);margin-top:7px}
 .cd-status{color:var(--dim);font-size:.9rem;margin-top:10px;min-height:1.2em}
 .cd-status.live{color:var(--gold3);font-weight:600}
