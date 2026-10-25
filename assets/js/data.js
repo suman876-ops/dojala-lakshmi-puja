@@ -5,7 +5,7 @@
 window.SITE_DEFAULT = {
   version: 4,
   adminPassword: "dojala2026",
-  countdownTarget: "2027-10-14T18:00:00+05:30",
+  countdownTarget: "",
 
   announcements: [],
 
