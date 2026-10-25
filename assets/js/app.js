@@ -43,12 +43,14 @@
   }
 
   /* ---------- reveal ---------- */
-  var io = new IntersectionObserver(function (es) {
+  var io = ("IntersectionObserver" in window) ? new IntersectionObserver(function (es) {
     es.forEach(function (e) {
       if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
     });
-  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }) : null;
+  function revealAll() { qsa(".reveal:not(.in)").forEach(function (el) { el.classList.add("in"); }); }
   function observeReveal() {
+    if (!io) { revealAll(); return; }
     qsa(".reveal:not(.in)").forEach(function (el, i) {
       el.style.transitionDelay = (Math.min(i % 6, 5) * 70) + "ms";
       io.observe(el);
@@ -99,18 +101,6 @@
         l.style.transform = "translate3d(" + (x * f) + "px," + (yy * f) + "px,0)";
       });
     });
-  }
-
-  /* ---------- countdown ---------- */
-  function tick() {
-    var t = new Date(DATA.countdownTarget).getTime(), d = t - Date.now();
-    if (isNaN(t)) return;
-    if (d < 0) d = 0;
-    var days = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4), s = Math.floor(d % 6e4 / 1e3);
-    if ($("cd-d")) $("cd-d").textContent = toBn(pad(days));
-    if ($("cd-h")) $("cd-h").textContent = toBn(pad(h));
-    if ($("cd-m")) $("cd-m").textContent = toBn(pad(m));
-    if ($("cd-s")) $("cd-s").textContent = toBn(pad(s));
   }
 
   /* ---------- count-up ---------- */
@@ -260,16 +250,22 @@
   /* ---------- music player ---------- */
   function music() {
     var a = $("audio"); if (!a) return;
-    if (DATA.song && DATA.song.src) a.src = DATA.song.src;
-    if ($("nowTitle")) $("nowTitle").textContent = (DATA.song && DATA.song.title) || "";
-    if ($("nowSub")) $("nowSub").textContent = (DATA.song && DATA.song.artist) || "";
-    var bars = qsa("#bars i"), bt = null;
-    function paintBars() {
-      bars.forEach(function (b) { b.style.height = (12 + Math.random() * 88) + "%"; });
+    var list = (DATA.songs && DATA.songs.length) ? DATA.songs : ((DATA.song && DATA.song.src) ? [DATA.song] : []);
+    var idx = 0;
+    function cur() { return list[idx] || { title: "কোনো গান চলছে না", artist: "" }; }
+    function load() {
+      var s = cur();
+      a.src = s.src || "";
+      if ($("nowTitle")) $("nowTitle").textContent = s.title || "কোনো গান চলছে না";
+      if ($("nowSub")) $("nowSub").textContent = s.artist || "শিল্পী বেছে নিন";
+      if ($("cur")) $("cur").textContent = "০:০০";
+      if ($("dur")) $("dur").textContent = "০:০০";
+      if ($("fill")) $("fill").style.width = "0%";
     }
+    var bars = qsa("#bars i"), bt = null;
+    function paintBars() { bars.forEach(function (b) { b.style.height = (15 + Math.random() * 85) + "%"; }); }
     function startBars() { if (bt) return; bt = setInterval(paintBars, 160); paintBars(); }
-    function stopBars() { clearInterval(bt); bt = null; bars.forEach(function (b) { b.style.height = "18%"; }); }
-
+    function stopBars() { clearInterval(bt); bt = null; bars.forEach(function (b) { b.style.height = "20%"; }); }
     function icon() {
       var playing = !a.paused && !a.ended;
       var p = $("playbtn"); if (p) p.innerHTML = playing
@@ -279,13 +275,15 @@
       if ($("miniMusic")) $("miniMusic").classList.toggle("playing", playing);
       playing ? startBars() : stopBars();
     }
-    function toggle() {
-      if (a.paused) { a.play().catch(function () {}); } else { a.pause(); }
-    }
+    function toggle() { if (a.paused) { a.play().catch(function () {}); } else { a.pause(); } }
+    function step(d) { if (!list.length) return; idx = (idx + d + list.length) % list.length; load(); a.play().catch(function () {}); }
     if ($("playbtn")) $("playbtn").addEventListener("click", toggle);
-    if ($("miniMusic")) $("miniMusic").addEventListener("click", function () { toggle(); });
+    if ($("miniMusic")) $("miniMusic").addEventListener("click", toggle);
     if ($("disc")) $("disc").addEventListener("click", toggle);
-    a.addEventListener("play", icon); a.addEventListener("pause", icon); a.addEventListener("ended", icon);
+    if ($("prevBtn")) $("prevBtn").addEventListener("click", function () { step(-1); });
+    if ($("nextBtn")) $("nextBtn").addEventListener("click", function () { step(1); });
+    a.addEventListener("play", icon); a.addEventListener("pause", icon);
+    a.addEventListener("ended", function () { if (list.length > 1) step(1); else icon(); });
     a.addEventListener("timeupdate", function () {
       var p = a.duration ? (a.currentTime / a.duration * 100) : 0;
       if ($("fill")) $("fill").style.width = p + "%";
@@ -297,11 +295,11 @@
       var r = bar.getBoundingClientRect();
       if (a.duration) a.currentTime = ((e.clientX - r.left) / r.width) * a.duration;
     });
-    var vol = $("vol"); if (vol) vol.addEventListener("input", function () { a.volume = +vol.value; });
     function fmt(t) { t = Math.max(0, Math.floor(t || 0)); return toBn(Math.floor(t / 60)) + ":" + toBn(pad(t % 60)); }
+    load();
     if ("mediaSession" in navigator) {
       try {
-        navigator.mediaSession.metadata = new MediaMetadata({ title: (DATA.song && DATA.song.title) || "লক্ষ্মীপূজার গান", artist: (DATA.song && DATA.song.artist) || "", album: "দোজলা লক্ষ্মীপূজা" });
+        navigator.mediaSession.metadata = new MediaMetadata({ title: cur().title, artist: cur().artist || "", album: "দোজলা লক্ষ্মীপূজা" });
         navigator.mediaSession.setActionHandler("play", toggle);
         navigator.mediaSession.setActionHandler("pause", toggle);
       } catch (e) {}
@@ -414,7 +412,7 @@
       files.forEach(function (f) {
         readImage(f, function (d) {
           var id = "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-          DATA.photos[id] = { src: d, caption: cap || "", credit: "Click by — Joydweep Das" };
+          DATA.photos[id] = { src: d, caption: cap || "" };
           arr.push(id); done++;
           if (done === files.length) { save(); renderAdmPhotos(); renderGallery(); renderYear(); admMsg(done + "টি ছবি যোগ হয়েছে।", true); $("admFile").value = ""; $("admCap").value = ""; }
         });
@@ -447,7 +445,7 @@
       var d = $("admDate").value, p = $("admNewPass").value.trim();
       if (d) DATA.countdownTarget = d + "T18:00:00+05:30";
       if (p) DATA.adminPassword = p;
-      save(); tick(); $("cdDate").textContent = bnDate(DATA.countdownTarget); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
+      save(); $("cdDate").textContent = bnDate(DATA.countdownTarget); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
     });
     if ($("admReset")) $("admReset").addEventListener("click", function () {
       if (!confirm("সব পরিবর্তন মুছে ডিফল্টে ফিরবেন?")) return;
@@ -520,7 +518,6 @@
     var fb = DATA.facebook || {};
     if ($("fbPuja") && fb.puja) $("fbPuja").href = fb.puja.url;
     if ($("fbDojala") && fb.dojala) $("fbDojala").href = fb.dojala.url;
-    tick();
     observeReveal(); countUp();
   }
 
@@ -529,8 +526,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     embers(); parallax(); nav(); events();
     loadData();
-    setInterval(tick, 1000);
     setTimeout(hideLoader, 650);
+    setTimeout(revealAll, 1800);
   });
   window.addEventListener("load", hideLoader);
   setTimeout(hideLoader, 2600);
