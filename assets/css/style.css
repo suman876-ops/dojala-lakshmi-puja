@@ -282,6 +282,10 @@ canvas#embers{position:absolute;inset:0;width:100%;height:100%}
 .msg .dt{font-size:.75rem;color:var(--dim);margin-top:9px}
 .file-drop{display:block;border:1.5px dashed var(--line-gold);border-radius:15px;padding:26px;text-align:center;color:var(--dim);cursor:pointer;background:rgba(255,255,255,.5);backdrop-filter:blur(8px);transition:.25s}
 .file-drop:hover{border-color:var(--gold);color:var(--gold3);background:rgba(240,200,105,.08)}
+.up-prev{position:relative;margin:12px 0 14px;border-radius:15px;overflow:hidden;border:1px solid var(--line-gold);background:rgba(255,255,255,.5)}
+.up-prev img{width:100%;max-height:300px;object-fit:contain;display:block}
+.up-prev-x{position:absolute;top:9px;right:9px;width:30px;height:30px;border-radius:9px;border:0;background:rgba(193,18,28,.92);color:#fff;font-size:.85rem;cursor:pointer;display:grid;place-items:center;line-height:1}
+.up-prev-t{display:block;padding:9px 12px;font-size:.82rem;color:var(--dim);text-align:center}
 
 /* ================= FACEBOOK / CONTACT ================= */
 .fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
