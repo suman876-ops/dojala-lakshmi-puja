@@ -809,7 +809,22 @@
 
   /* ---------- boot ---------- */
   function hideLoader() { if ($("loader")) $("loader").classList.add("done"); }
+  /* boot counter 0 -> 100 */
+  function bootCounter() {
+    var pct = $("ldPct"), bar = $("ldBar");
+    if (!pct && !bar) return;
+    var start = Date.now(), dur = 1150;
+    var t = setInterval(function () {
+      var p = Math.min(1, (Date.now() - start) / dur);
+      var n = Math.round(p * 100);
+      if (pct) pct.textContent = toBn(n) + "%";
+      if (bar) bar.style.width = n + "%";
+      if (p >= 1) clearInterval(t);
+    }, 16);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    bootCounter();
     embers(); parallax(); nav(); clock(); events();
     loadData();
     if (sbReady()) initSB();
