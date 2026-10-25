@@ -381,6 +381,11 @@
       var n = $("grName").value.trim(), m = $("grMsg").value.trim();
       if (!n) return flash("grName");
       if (!m) return flash("grMsg");
+      if (SB_ON) {
+        SB.addGreeting(n, m).then(function () { return refreshFromSB(); }).then(function () { $("grName").value = ""; $("grMsg").value = ""; toast("ধন্যবাদ! আপনার শুভেচ্ছা যোগ হয়েছে।"); })
+          .catch(function () { toast("দুঃখিত, পাঠানো যায়নি।"); });
+        return;
+      }
       DATA.greetings = DATA.greetings || [];
       DATA.greetings.push({ name: n, msg: m, date: today() });
       save(); renderGreet(); $("grName").value = ""; $("grMsg").value = "";
@@ -390,10 +395,20 @@
     // visitor upload
     if ($("upFile")) $("upFile").addEventListener("change", function () {
       var f = this.files && this.files[0]; if (!f) return;
+      $("upFile")._file = f;
       readImage(f, function (d) { $("upFile")._data = d; });
     });
     if ($("upSubmit")) $("upSubmit").addEventListener("click", function () {
       var n = $("upName").value.trim(); if (!n) return flash("upName");
+      if (SB_ON) {
+        var file = $("upFile")._file;
+        if (!file) return toast("আগে একটি ছবি বেছে নিন।");
+        toast("আপলোড হচ্ছে...");
+        SB.upload(file, "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
+          .then(function () { $("upName").value = ""; $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
+          .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
+        return;
+      }
       var d = $("upFile")._data; if (!d) return toast("আগে একটি ছবি বেছে নিন।");
       DATA.visitorPhotos = DATA.visitorPhotos || [];
       DATA.visitorPhotos.push({ name: n, src: d });
@@ -438,6 +453,15 @@
       else { $("admPass").value = ""; $("loginMsg").className = "panel-msg"; openModal("loginModal"); setTimeout(function () { $("admPass").focus(); }, 80); }
     });
     if ($("loginBtn")) $("loginBtn").addEventListener("click", function () {
+      if (SB_ON) {
+        var em = ($("admEmail") && $("admEmail").value.trim()) || "";
+        if (!em) { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ইমেইল লিখুন।"; return; }
+        $("loginMsg").className = "panel-msg"; $("loginMsg").textContent = "লগইন হচ্ছে...";
+        SB.signIn(em, $("admPass").value).then(function () {
+          sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin();
+        }).catch(function () { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল ইমেইল বা পাসওয়ার্ড।"; });
+        return;
+      }
       if ($("admPass").value === DATA.adminPassword) { sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin(); }
       else { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।"; }
     });
@@ -455,6 +479,20 @@
       var files = Array.prototype.slice.call(this.files || []); if (!files.length) return;
       var cat = $("admCat").value, cap = $("admCap").value.trim(), arr = admListFor(cat);
       if (!arr) return admMsg("ভুল বিভাগ।", false);
+      if (SB_ON) {
+        var parts = cat.split(".");
+        var category = parts[0] === "gallery" ? parts[1] : "puja";
+        var year = parts[0] === "year" ? parseInt(parts[1], 10) : null;
+        admMsg("আপলোড হচ্ছে...", true);
+        Promise.all(files.map(function (f) {
+          return SB.upload(f, "gallery").then(function (url) {
+            return SB.addPhoto({ url: url, caption: cap || "", tag: "", tag_type: "live", category: category, year: year, sort: Date.now() });
+          });
+        })).then(function () { return refreshFromSB(); }).then(function () {
+          admMsg(files.length + "টি ছবি যোগ হয়েছে।", true); $("admFile").value = ""; $("admCap").value = "";
+        }).catch(function (e) { admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : ""), false); });
+        return;
+      }
       var done = 0;
       files.forEach(function (f) {
         readImage(f, function (d) {
@@ -468,11 +506,22 @@
     if ($("admPhotoList")) $("admPhotoList").addEventListener("click", function (e) {
       var b = e.target.closest("[data-delcat]"); if (!b) return;
       if (!confirm("এই ছবিটি মুছে ফেলবেন?")) return;
-      var arr = admListFor(b.dataset.delcat); arr.splice(+b.dataset.deli, 1);
+      var arr = admListFor(b.dataset.delcat), did = arr[+b.dataset.deli];
+      if (SB_ON) {
+        SB.deletePhoto(did).then(function () { return refreshFromSB(); }).then(function () { admMsg("ছবি মুছে ফেলা হয়েছে।", true); })
+          .catch(function (e) { admMsg("মুছতে ব্যর্থ: " + (e && e.message ? e.message : ""), false); });
+        return;
+      }
+      arr.splice(+b.dataset.deli, 1);
       cleanPhotos(); save(); renderAdmPhotos(); renderGallery(); renderYear(); admMsg("ছবি মুছে ফেলা হয়েছে।", true);
     });
     if ($("admAddNotice")) $("admAddNotice").addEventListener("click", function () {
       var t = $("admNotice").value.trim(); if (!t) return admMsg("ঘোষণার লেখা লিখুন।", false);
+      if (SB_ON) {
+        SB.addAnnouncement(t, today()).then(function () { return refreshFromSB(); }).then(function () { $("admNotice").value = ""; admMsg("ঘোষণা যোগ হয়েছে।", true); })
+          .catch(function (e) { admMsg("ব্যর্থ: " + (e && e.message ? e.message : ""), false); });
+        return;
+      }
       DATA.announcements = DATA.announcements || [];
       DATA.announcements.unshift({ text: t, date: today() });
       save(); renderAdmNotices(); renderNotices(); $("admNotice").value = ""; admMsg("ঘোষণা যোগ হয়েছে।", true);
@@ -480,10 +529,23 @@
     if ($("admNoticeList")) $("admNoticeList").addEventListener("click", function (e) {
       var b = e.target.closest("[data-delnotice]"); if (!b) return;
       if (!confirm("এই ঘোষণা মুছবেন?")) return;
-      DATA.announcements.splice(+b.dataset.delnotice, 1); save(); renderAdmNotices(); renderNotices(); admMsg("ঘোষণা মুছে ফেলা হয়েছে।", true);
+      var ni = +b.dataset.delnotice;
+      if (SB_ON) {
+        SB.deleteAnnouncement(DATA.announcements[ni].id).then(function () { return refreshFromSB(); }).then(function () { admMsg("ঘোষণা মুছে ফেলা হয়েছে।", true); })
+          .catch(function () { admMsg("ব্যর্থ হয়েছে।", false); });
+        return;
+      }
+      DATA.announcements.splice(ni, 1); save(); renderAdmNotices(); renderNotices(); admMsg("ঘোষণা মুছে ফেলা হয়েছে।", true);
     });
     if ($("admGreetList")) $("admGreetList").addEventListener("click", function (e) {
       var b = e.target.closest("[data-delgreet],[data-delvphoto]"); if (!b) return;
+      if (SB_ON) {
+        var pr = b.hasAttribute("data-delgreet")
+          ? SB.deleteGreeting(DATA.greetings[+b.dataset.delgreet].id)
+          : SB.deleteVisitor(DATA.visitorPhotos[+b.dataset.delvphoto].id);
+        pr.then(function () { return refreshFromSB(); }).then(function () { admMsg("মুছে ফেলা হয়েছে।", true); }).catch(function () { admMsg("ব্যর্থ হয়েছে।", false); });
+        return;
+      }
       if (b.hasAttribute("data-delgreet")) DATA.greetings.splice(+b.dataset.delgreet, 1);
       else DATA.visitorPhotos.splice(+b.dataset.delvphoto, 1);
       save(); renderAdmGreet(); renderGreet(); renderVisitor(); admMsg("মুছে ফেলা হয়েছে।", true);
@@ -568,11 +630,43 @@
     observeReveal(); countUp();
   }
 
+  /* ---------- supabase sync ---------- */
+  var SB_ON = false;
+  function sbReady() { return !!(window.SB && window.SB.configured()); }
+  function applySB(photos, ann, greet, vis) {
+    DATA.photos = {}; DATA.gallery = { puja: [], committee: [] }; DATA.years = {};
+    var defYear = new Date().getFullYear();
+    (photos || []).forEach(function (row) {
+      DATA.photos[row.id] = { src: row.url, caption: row.caption || "", tag: row.tag || "", tagType: row.tag_type || "live" };
+      var cat = row.category === "committee" ? "committee" : "puja";
+      DATA.gallery[cat].push(row.id);
+      var yr = row.year || defYear;
+      DATA.years[yr] = DATA.years[yr] || [];
+      DATA.years[yr].push(row.id);
+    });
+    DATA.announcements = (ann || []).map(function (a) { return { text: a.text, date: a.date || "", id: a.id }; });
+    DATA.greetings = (greet || []).map(function (g) { return { name: g.name, msg: g.msg, id: g.id, date: "" }; });
+    DATA.visitorPhotos = (vis || []).map(function (v) { return { name: v.name, src: v.url, id: v.id }; });
+  }
+  function refreshFromSB() {
+    return Promise.all([SB.listPhotos(), SB.listAnnouncements(), SB.listGreetings(), SB.listVisitor()])
+      .then(function (r) { applySB(r[0], r[1], r[2], r[3]); renderAll(); renderAdmin(); });
+  }
+  function initSB() {
+    return SB.load().then(function (ok) {
+      if (!ok) return;
+      SB_ON = true;
+      if ($("admEmailWrap")) $("admEmailWrap").hidden = false;
+      return refreshFromSB();
+    }).catch(function () {});
+  }
+
   /* ---------- boot ---------- */
   function hideLoader() { if ($("loader")) $("loader").classList.add("done"); }
   document.addEventListener("DOMContentLoaded", function () {
     embers(); parallax(); nav(); clock(); events();
     loadData();
+    if (sbReady()) initSB();
     tick(); setInterval(tick, 1000);
     setTimeout(hideLoader, 650);
     setTimeout(revealAll, 1800);
