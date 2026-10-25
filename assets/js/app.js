@@ -530,7 +530,7 @@
               admMsg("আপলোড হচ্ছে... (" + toBn(i + 1) + "/" + toBn(files.length) + ")", true);
               return shrinkBlob(f).then(function (out) {
                 return SB.upload(out, "gallery").then(function (url) {
-                  return SB.addPhoto({ url: url, caption: cap || "", tag: "", tag_type: "live", category: category, year: year, sort: Date.now() + i });
+                  return SB.addPhoto({ url: url, caption: cap || "", tag: "এই বছর", tag_type: "live", category: category, year: year, sort: Date.now() + i });
                 });
               });
             });
