@@ -475,21 +475,41 @@
       });
     });
 
+    var admFiles = [];
+    function renderAdmPreview() {
+      var el = $("admPreview"); if (!el) return;
+      el.innerHTML = admFiles.map(function (f, i) {
+        var u = URL.createObjectURL(f);
+        return '<span class="adm-thumb"><img src="' + u + '" alt=""><button class="adm-thumb-x" data-rfi="' + i + '" title="বাতিল">✕</button></span>';
+      }).join("");
+      if ($("admCount")) $("admCount").textContent = admFiles.length ? (toBn(admFiles.length) + "টি ছবি বেছে নেওয়া হয়েছে — এখন নিচের বোতামে চাপ দিন।") : "";
+    }
     if ($("admFile")) $("admFile").addEventListener("change", function () {
-      var files = Array.prototype.slice.call(this.files || []); if (!files.length) return;
+      admFiles = admFiles.concat(Array.prototype.slice.call(this.files || []));
+      this.value = "";
+      renderAdmPreview();
+    });
+    if ($("admPreview")) $("admPreview").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-rfi]"); if (!b) return;
+      admFiles.splice(+b.dataset.rfi, 1); renderAdmPreview();
+    });
+    if ($("admUpload")) $("admUpload").addEventListener("click", function () {
       var cat = $("admCat").value, cap = $("admCap").value.trim(), arr = admListFor(cat);
+      if (!admFiles.length) return admMsg("আগে ধাপ ৩-এ একটি ছবি বেছে নিন।", false);
       if (!arr) return admMsg("ভুল বিভাগ।", false);
+      var files = admFiles.slice();
       if (SB_ON) {
         var parts = cat.split(".");
         var category = parts[0] === "gallery" ? parts[1] : "puja";
         var year = parts[0] === "year" ? parseInt(parts[1], 10) : null;
-        admMsg("আপলোড হচ্ছে...", true);
+        admMsg("আপলোড হচ্ছে... একটু অপেক্ষা করুন।", true);
         Promise.all(files.map(function (f) {
           return SB.upload(f, "gallery").then(function (url) {
             return SB.addPhoto({ url: url, caption: cap || "", tag: "", tag_type: "live", category: category, year: year, sort: Date.now() });
           });
         })).then(function () { return refreshFromSB(); }).then(function () {
-          admMsg(files.length + "টি ছবি যোগ হয়েছে।", true); $("admFile").value = ""; $("admCap").value = "";
+          admFiles = []; renderAdmPreview(); $("admCap").value = "";
+          admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
         }).catch(function (e) { admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : ""), false); });
         return;
       }
@@ -499,7 +519,7 @@
           var id = "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
           DATA.photos[id] = { src: d, caption: cap || "" };
           arr.push(id); done++;
-          if (done === files.length) { save(); renderAdmPhotos(); renderGallery(); renderYear(); admMsg(done + "টি ছবি যোগ হয়েছে।", true); $("admFile").value = ""; $("admCap").value = ""; }
+          if (done === files.length) { save(); renderAdmPhotos(); renderGallery(); renderYear(); admFiles = []; renderAdmPreview(); $("admCap").value = ""; admMsg(toBn(done) + "টি ছবি যোগ হয়েছে।", true); }
         });
       });
     });
@@ -601,6 +621,7 @@
       });
     });
     el.innerHTML = html || '<li style="background:none;color:var(--dim)">এখনো কোনো ছবি নেই।</li>';
+    if ($("admPhotoCount")) $("admPhotoCount").textContent = toBn(Object.keys(DATA.photos || {}).length);
   }
   function renderAdmNotices() {
     var el = $("admNoticeList"); if (!el) return;
