@@ -184,7 +184,7 @@
     return mode === "all" ? (g.puja || []).concat(g.committee || []) : (g[mode] || []);
   }
   function card(p, idx, list) {
-    var badge = ((list.indexOf("gallery.") === 0 || list.indexOf("year.") === 0) && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
+    var badge = ((list.indexOf("gallery.") === 0 || list.indexOf("year.") === 0 || list === "visitor") && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
     return '<figure class="gitem tilt" data-list="' + list + '" data-idx="' + idx + '">' + badge +
       '<img src="' + esc(p.src) + '" alt="' + esc(p.caption || "দোজলা লক্ষ্মীপূজার ছবি") + '" loading="lazy" decoding="async">' +
       '<span class="zoom"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg></span>' +
@@ -210,7 +210,14 @@
   var yearSel = null;
   function renderYear() {
     var arr = (DATA.years && DATA.years[yearSel]) || [], g = $("yearGrid"); if (!g) return;
-    g.innerHTML = arr.length ? arr.map(function (id, i) { return card(ph(id), i, "year." + yearSel); }).join("")
+    var cards = arr.map(function (id, i) { return card(ph(id), i, "year." + yearSel); });
+    if (String(yearSel) === String(new Date().getFullYear())) {
+      var vp = DATA.visitorPhotos || [];
+      cards = cards.concat(vp.slice().reverse().map(function (p, i) {
+        return card({ src: p.src, caption: p.name || "", tag: "দর্শকের ছবি", tagType: "live" }, vp.length - 1 - i, "visitor");
+      }));
+    }
+    g.innerHTML = cards.length ? cards.join("")
       : '<div class="empty">' + toBn(yearSel || "") + " সালের ছবি এখনো যোগ করা হয়নি। অ্যাডমিন প্যানেল থেকে যোগ করুন।</div>";
     tilt();
   }
@@ -273,11 +280,11 @@
     r.onload = function () {
       var img = new Image();
       img.onload = function () {
-        var m = 1500, w = img.width, h = img.height;
+        var m = 1400, w = img.width, h = img.height;
         if (Math.max(w, h) > m) { var s = m / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
         var c = document.createElement("canvas"); c.width = w; c.height = h;
         c.getContext("2d").drawImage(img, 0, 0, w, h);
-        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.82); } catch (e) { cb(file); }
+        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.78); } catch (e) { cb(file); }
       };
       img.onerror = function () { cb(file); };
       img.src = r.result;
@@ -412,10 +419,31 @@
     });
 
     // visitor upload
+    function clearUpPreview() {
+      var pv = $("upPreview"); if (pv) { try { if (pv._url) URL.revokeObjectURL(pv._url); } catch (e) {} pv._url = null; pv.hidden = true; pv.innerHTML = ""; }
+      if ($("upFile")) { $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; }
+      if ($("upDrop")) $("upDrop").textContent = "এখানে ক্লিক করে ছবি নির্বাচন করুন";
+      if ($("upName")) $("upName").value = "";
+    }
     if ($("upFile")) $("upFile").addEventListener("change", function () {
       var f = this.files && this.files[0]; if (!f) return;
+      if (!/^image\//.test(f.type || "")) { this.value = ""; return toast("শুধু ছবি (JPG / PNG) দেওয়া যাবে।"); }
       $("upFile")._file = f;
       readImage(f, function (d) { $("upFile")._data = d; });
+      var pv = $("upPreview");
+      if (pv) {
+        try { if (pv._url) URL.revokeObjectURL(pv._url); } catch (e) {}
+        var u = f;
+        try { u = URL.createObjectURL(f); pv._url = u; } catch (e) { u = ""; }
+        pv.hidden = false;
+        pv.innerHTML = (u ? '<img src="' + u + '" alt="প্রিভিউ">' : "") +
+          '<button type="button" class="up-prev-x" id="upPrevX" aria-label="বাতিল">✕</button>' +
+          '<span class="up-prev-t">ছবি ঠিক আছে? নিচে “ছবি আপলোড করুন” চাপুন।</span>';
+      }
+      if ($("upDrop")) $("upDrop").textContent = "অন্য ছবি বেছে নিতে এখানে ক্লিক করুন";
+    });
+    if ($("upPreview")) $("upPreview").addEventListener("click", function (e) {
+      if (e.target && e.target.closest && e.target.closest("#upPrevX")) clearUpPreview();
     });
     if ($("upSubmit")) $("upSubmit").addEventListener("click", function () {
       var n = $("upName").value.trim();
@@ -428,7 +456,7 @@
           var out = blob;
           try { if (blob && !(blob instanceof File)) out = new File([blob], "photo.jpg", { type: "image/jpeg" }); } catch (e) { out = file; }
           SB.upload(out, "visitor", "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
-            .then(function () { $("upName").value = ""; $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
+            .then(function () { clearUpPreview(); toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
             .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
         });
         return;
@@ -436,7 +464,7 @@
       var d = $("upFile")._data; if (!d) return toast("আগে একটি ছবি বেছে নিন।");
       DATA.visitorPhotos = DATA.visitorPhotos || [];
       DATA.visitorPhotos.push({ name: n, src: d });
-      save(); renderVisitor(); $("upName").value = ""; $("upFile").value = ""; $("upFile")._data = null;
+      save(); renderVisitor(); renderYear(); clearUpPreview();
       toast("ছবি যোগ হয়েছে! ধন্যবাদ।");
     });
 
@@ -704,6 +732,7 @@
     DATA.announcements = (ann || []).map(function (a) { return { text: a.text, date: a.date || "", id: a.id }; });
     DATA.greetings = (greet || []).map(function (g) { return { name: g.name, msg: g.msg, id: g.id, date: "" }; });
     DATA.visitorPhotos = (vis || []).map(function (v) { return { name: v.name, src: v.url, id: v.id }; });
+    if (DATA.visitorPhotos.length) { var curY = new Date().getFullYear(); DATA.years[curY] = DATA.years[curY] || []; }
   }
   function refreshFromSB() {
     return Promise.all([SB.listPhotos(), SB.listAnnouncements(), SB.listGreetings(), SB.listVisitor()])
