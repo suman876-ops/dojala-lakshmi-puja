@@ -266,6 +266,25 @@
     r.readAsDataURL(file);
   }
 
+  /* resize + compress in the browser before upload (fast on slow networks) */
+  function shrinkImage(file, cb) {
+    var r = new FileReader();
+    r.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var m = 1500, w = img.width, h = img.height;
+        if (Math.max(w, h) > m) { var s = m / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+        var c = document.createElement("canvas"); c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.82); } catch (e) { cb(file); }
+      };
+      img.onerror = function () { cb(file); };
+      img.src = r.result;
+    };
+    r.onerror = function () { cb(file); };
+    r.readAsDataURL(file);
+  }
+
   /* ---------- music player ---------- */
   function music() {
     var a = $("audio"); if (!a) return;
@@ -386,12 +405,15 @@
       if (SB_ON) {
         var file = $("upFile")._file;
         if (!file) return toast("আগে একটি ছবি বেছে নিন।");
-        if (file.size > 5 * 1024 * 1024) return toast("ছবিটি ৫ MB-এর চেয়ে বড় — ছোট ছবি দিন।");
         if (!/^image\//.test(file.type || "")) return toast("শুধু ছবি (JPG / PNG) দেওয়া যাবে।");
         toast("আপলোড হচ্ছে...");
-        SB.upload(file, "visitor", "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
-          .then(function () { $("upName").value = ""; $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
-          .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
+        shrinkImage(file, function (blob) {
+          var out = blob;
+          try { if (blob && !(blob instanceof File)) out = new File([blob], "photo.jpg", { type: "image/jpeg" }); } catch (e) { out = file; }
+          SB.upload(out, "visitor", "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
+            .then(function () { $("upName").value = ""; $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
+            .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
+        });
         return;
       }
       var d = $("upFile")._data; if (!d) return toast("আগে একটি ছবি বেছে নিন।");
