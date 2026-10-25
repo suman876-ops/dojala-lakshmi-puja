@@ -306,9 +306,11 @@
     function stopBars() { clearInterval(bt); bt = null; bars.forEach(function (b) { b.style.height = "20%"; }); }
     function icon() {
       var playing = !a.paused && !a.ended;
-      var p = $("playbtn"); if (p) p.innerHTML = playing
+      var ic = playing
         ? '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>'
         : '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      if ($("playbtn")) $("playbtn").innerHTML = ic;
+      if ($("discIcon")) $("discIcon").innerHTML = ic;
       if ($("disc")) $("disc").classList.toggle("playing", playing);
       if ($("miniMusic")) $("miniMusic").classList.toggle("playing", playing);
       playing ? startBars() : stopBars();
