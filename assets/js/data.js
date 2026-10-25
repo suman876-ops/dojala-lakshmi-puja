@@ -24,11 +24,12 @@ window.SITE_DEFAULT = {
     p12: { src: "assets/img/p12.webp", caption: "ভোগের রান্নার আয়োজন",     tag: "এই বছর", tagType: "live" },
     p13: { src: "assets/img/p13.webp", caption: "আলোয় ছোট্ট মুখগুলো",       tag: "এই বছর", tagType: "live" },
     p14: { src: "assets/img/p14.webp", caption: "মণ্ডপে রান্নার তৎপরতা",    tag: "এই বছর", tagType: "live" },
-    p15: { src: "assets/img/p15.webp", caption: "পূর্ণিমার রাতে মা লক্ষ্মী", tag: "এই বছর", tagType: "live" }
+    p15: { src: "assets/img/p15.webp", caption: "পূর্ণিমার রাতে মা লক্ষ্মী", tag: "এই বছর", tagType: "live" },
+    p16: { src: "assets/img/p16.webp", caption: "", tag: "এই বছর", tagType: "live" }
   },
 
   gallery: {
-    puja:      ["p1", "p2", "p3", "p4", "p5", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15"],
+    puja:      ["p1", "p2", "p3", "p4", "p5", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16"],
     committee: ["p6", "p7"]
   },
 
