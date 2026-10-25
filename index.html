@@ -386,54 +386,98 @@
 <!-- ============ ADMIN PANEL ============ -->
 <div class="overlay" id="adminModal">
   <div class="panel">
-    <div class="panel-head"><h3>অ্যাডমিন প্যানেল</h3><span class="badge-admin">Admin</span><button class="icon-btn" data-close="adminModal" aria-label="বন্ধ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="panel-head">
+      <span class="panel-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+      <h3>অ্যাডমিন প্যানেল</h3><span class="badge-admin">Admin</span>
+      <button class="icon-btn" data-close="adminModal" aria-label="বন্ধ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
     <div class="panel-body">
       <div class="panel-msg" id="admMsg"></div>
       <div class="panel-tabs">
-        <button class="ptab active" data-ptab="photos">ছবি</button>
-        <button class="ptab" data-ptab="notices">ঘোষণা</button>
-        <button class="ptab" data-ptab="greet">শুভেচ্ছা</button>
-        <button class="ptab" data-ptab="settings">সেটিংস</button>
+        <button class="ptab active" data-ptab="photos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>ছবি</button>
+        <button class="ptab" data-ptab="notices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>ঘোষণা</button>
+        <button class="ptab" data-ptab="greet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>শুভেচ্ছা</button>
+        <button class="ptab" data-ptab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>সেটিংস</button>
       </div>
 
+      <!-- ---------- ছবি ---------- -->
       <div class="ptab-body" data-pbody="photos">
-        <div class="field"><label>কোথায় যোগ করবেন?</label>
-          <select id="admCat">
-            <option value="gallery.puja">গ্যালারি — গ্রামের পূজার ছবি</option>
-            <option value="gallery.committee">গ্যালারি — কমিটির ছবি</option>
-            <option value="year.2025">বছরভিত্তিক — ২০২৫</option>
-            <option value="year.2024">বছরভিত্তিক — ২০২৪</option>
-            <option value="year.2023">বছরভিত্তিক — ২০২৩</option>
-            <option value="year.2022">বছরভিত্তিক — ২০২২</option>
-            <option value="year.2021">বছরভিত্তিক — ২০২১</option>
-            <option value="year.2020">বছরভিত্তিক — ২০২০</option>
-          </select>
+        <p class="adm-intro">নিচের <b>৩টি ধাপ</b> পূরণ করে শেষে <b>“ছবি আপলোড করুন”</b> বোতামে চাপ দিন — তখনই ছবি সাইটে যোগ হবে ও সবার কাছে দেখা যাবে।</p>
+
+        <div class="adm-step">
+          <span class="step-n">১</span>
+          <div class="adm-step-body">
+            <label>ছবিটি কোথায় যাবে?</label>
+            <select id="admCat">
+              <option value="gallery.puja">গ্যালারি — গ্রামের পূজার ছবি</option>
+              <option value="gallery.committee">গ্যালারি — কমিটির ছবি</option>
+              <option value="year.2025">বছরভিত্তিক — ২০২৫</option>
+              <option value="year.2024">বছরভিত্তিক — ২০২৪</option>
+              <option value="year.2023">বছরভিত্তিক — ২০২৩</option>
+              <option value="year.2022">বছরভিত্তিক — ২০২২</option>
+              <option value="year.2021">বছরভিত্তিক — ২০২১</option>
+              <option value="year.2020">বছরভিত্তিক — ২০২০</option>
+            </select>
+            <p class="hint">“গ্যালারি” বাছলে ছবি গ্যালারি শোকেসে যাবে; “বছরভিত্তিক” বাছলে সেই বছরের গ্যালারিতে যাবে।</p>
+          </div>
         </div>
-        <div class="field"><label>ছবির ক্যাপশন (ঐচ্ছিক)</label><input id="admCap" type="text" placeholder="যেমন: মণ্ডপে মা লক্ষ্মী" maxlength="60"></div>
-        <label class="file-drop" for="admFile">এক বা একাধিক ছবি নির্বাচন করুন</label>
-        <input id="admFile" type="file" accept="image/*" multiple hidden>
-        <ul class="adm-list" id="admPhotoList" style="margin-top:16px"></ul>
+
+        <div class="adm-step">
+          <span class="step-n">২</span>
+          <div class="adm-step-body">
+            <label>ছবির ক্যাপশন <span class="opt">(ঐচ্ছিক)</span></label>
+            <input id="admCap" type="text" placeholder="যেমন: মণ্ডপে মা লক্ষ্মী" maxlength="60">
+            <p class="hint">ছবির নিচে এই লেখাটি দেখা যাবে। খালি রাখলে কিছু দেখাবে না।</p>
+          </div>
+        </div>
+
+        <div class="adm-step">
+          <span class="step-n">৩</span>
+          <div class="adm-step-body">
+            <label>ছবি বেছে নিন</label>
+            <label class="file-drop" for="admFile">এখানে ক্লিক করে এক বা একাধিক ছবি নির্বাচন করুন</label>
+            <input id="admFile" type="file" accept="image/*" multiple hidden>
+            <div class="adm-preview" id="admPreview"></div>
+            <p class="hint" id="admCount"></p>
+          </div>
+        </div>
+
+        <button class="btn btn-gold adm-submit" id="admUpload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          ছবি আপলোড করুন
+        </button>
+
+        <div class="adm-sep"></div>
+        <h4 class="adm-h4">বর্তমান ছবি <span class="count" id="admPhotoCount"></span></h4>
+        <ul class="adm-list" id="admPhotoList"></ul>
       </div>
 
+      <!-- ---------- ঘোষণা ---------- -->
       <div class="ptab-body" data-pbody="notices" hidden>
+        <p class="adm-intro">নোটিশ লিখে <b>“ঘোষণা যোগ করুন”</b> চাপলে তা সাইটের ঘোষণা-বোর্ডে (উপরের চলমান লেখাসহ) দেখা যাবে।</p>
         <div class="field"><label>নতুন ঘোষণা</label><textarea id="admNotice" placeholder="ঘোষণার লেখা লিখুন..."></textarea></div>
-        <button class="btn btn-gold" id="admAddNotice">ঘোষণা যোগ করুন</button>
-        <ul class="adm-list" id="admNoticeList" style="margin-top:16px"></ul>
+        <button class="btn btn-gold adm-submit" id="admAddNotice">ঘোষণা যোগ করুন</button>
+        <div class="adm-sep"></div>
+        <h4 class="adm-h4">বর্তমান ঘোষণা</h4>
+        <ul class="adm-list" id="admNoticeList"></ul>
       </div>
 
+      <!-- ---------- শুভেচ্ছা ---------- -->
       <div class="ptab-body" data-pbody="greet" hidden>
-        <p class="hint" style="margin-top:0">দর্শকদের পাঠানো শুভেচ্ছা বার্তা ও ছবি এখান থেকে দেখুন ও মুছুন।</p>
+        <p class="adm-intro">দর্শকদের পাঠানো শুভেচ্ছা বার্তা ও ছবি এখানে দেখা যাবে। অনুচিত কিছু থাকলে ✕ চেপে মুছে দিন।</p>
         <ul class="adm-list" id="admGreetList"></ul>
       </div>
 
+      <!-- ---------- সেটিংস ---------- -->
       <div class="ptab-body" data-pbody="settings" hidden>
-        <div class="field"><label>কাউন্টডাউন তারিখ (ফাঁকা রাখলে আজকের সন্ধ্যা ৭টা)</label><input id="admDate" type="date"></div>
+        <p class="adm-intro">সাইটের সাধারণ সেটিংস।</p>
+        <div class="field"><label>কাউন্টডাউন তারিখ <span class="opt">(ফাঁকা রাখলে আজকের সন্ধ্যা ৭টা)</span></label><input id="admDate" type="date"></div>
         <div class="field"><label>নতুন অ্যাডমিন পাসওয়ার্ড</label><input id="admNewPass" type="text" placeholder="নতুন পাসওয়ার্ড" maxlength="40"></div>
         <button class="btn btn-gold" id="admSaveSettings">সেটিংস সংরক্ষণ করুন</button>
-        <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
-        <h4 style="color:var(--gold3);font-family:var(--body)">সাইট আপডেট (data.json)</h4>
-        <p class="hint">নিচের বোতামে চাপ দিলে আপনার সব পরিবর্তনসহ <b>data.json</b> ফাইল ডাউনলোড হবে। সেটি সাইটের ফোল্ডারে (index.html-এর পাশে) আপলোড করলে সবাই পরিবর্তন দেখতে পাবে।</p>
-        <button class="btn btn-red" id="admExport">আপডেটেড data.json ডাউনলোড করুন</button>
+        <div class="adm-sep"></div>
+        <h4 class="adm-h4">ব্যাকআপ (data.json)</h4>
+        <p class="hint">লোকাল মোডে সব পরিবর্তনসহ <b>data.json</b> নামিয়ে সাইটের ফোল্ডারে রাখতে পারেন। (Supabase চালু থাকলে এটির দরকার নেই।)</p>
+        <button class="btn btn-red" id="admExport">data.json ডাউনলোড করুন</button>
         <button class="btn btn-ghost" id="admReset" style="margin-left:8px">ডিফল্টে ফিরুন</button>
       </div>
     </div>
