@@ -179,6 +179,38 @@
   var gMode = "all";
   function ph(id) { return (DATA.photos && DATA.photos[id]) || { src: "", caption: "" }; }
   function resolve(arr) { return (arr || []).map(ph); }
+
+  /* ---------- downloads ---------- */
+  function fetchBlob(url) {
+    if (!url) return Promise.reject(new Error("no url"));
+    if (url.indexOf("data:") === 0) {
+      try {
+        var parts = url.split(","), mime = (parts[0].match(/data:([^;]+)/) || [])[1] || "image/jpeg";
+        var bin = atob(parts[1]), arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return Promise.resolve(new Blob([arr], { type: mime }));
+      } catch (e) { return Promise.reject(e); }
+    }
+    return fetch(url, { mode: "cors" }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.blob(); });
+  }
+  function saveBlob(blob, name) {
+    var u = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = u; a.download = name; a.style.display = "none";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { try { URL.revokeObjectURL(u); a.remove(); } catch (e) {} }, 2500);
+  }
+  function extOf(url) { return /\.png(\?|$)/i.test(url) ? "png" : (/\.webp(\?|$)/i.test(url) ? "webp" : "jpg"); }
+  function loadJSZip() {
+    return new Promise(function (res, rej) {
+      if (window.JSZip) return res(window.JSZip);
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+      s.async = true;
+      s.onload = function () { window.JSZip ? res(window.JSZip) : rej(new Error("jszip")); };
+      s.onerror = function () { rej(new Error("cdn")); };
+      document.head.appendChild(s);
+    });
+  }
   function galleryIds(mode) {
     var g = DATA.gallery || {};
     return mode === "all" ? (g.puja || []).concat(g.committee || []) : (g[mode] || []);
@@ -394,6 +426,35 @@
     if ($("lbClose")) $("lbClose").addEventListener("click", function () { $("lightbox").classList.remove("open"); });
     if ($("lbPrev")) $("lbPrev").addEventListener("click", function () { lbI = (lbI - 1 + lb.length) % lb.length; showLb(); });
     if ($("lbNext")) $("lbNext").addEventListener("click", function () { lbI = (lbI + 1) % lb.length; showLb(); });
+    if ($("lbDl")) $("lbDl").addEventListener("click", function () {
+      var p = lb[lbI]; if (!p || !p.src) return;
+      toast("ছবি নামানো হচ্ছে...");
+      fetchBlob(p.src).then(function (b) { saveBlob(b, "dojala-photo-" + (lbI + 1) + "." + extOf(p.src)); })
+        .catch(function () { try { window.open(p.src, "_blank"); } catch (e) {} });
+    });
+    if ($("dlAll")) $("dlAll").addEventListener("click", function () {
+      var arr = resolve(galleryIds("all")).concat(DATA.visitorPhotos || []);
+      if (!arr.length) return toast("এখনো কোনো ছবি নেই।");
+      var btn = this; btn.disabled = true;
+      toast("সব ছবি নামানো হচ্ছে... একটু অপেক্ষা করুন।");
+      loadJSZip().then(function (JSZip) {
+        var zip = new JSZip(), chain = Promise.resolve(), ok = 0;
+        arr.forEach(function (p, i) {
+          chain = chain.then(function () {
+            return fetchBlob(p.src).then(function (b) {
+              zip.file("dojala-photo-" + pad(i + 1) + "." + extOf(p.src), b);
+              ok++;
+              if (i % 4 === 0) toast("ছবি নামানো হচ্ছে... " + toBn(ok) + "/" + toBn(arr.length));
+            }).catch(function () {});
+          });
+        });
+        return chain.then(function () { return zip.generateAsync({ type: "blob" }); });
+      }).then(function (blob) {
+        saveBlob(blob, "dojala-photos.zip");
+        toast(toBn(arr.length) + "টি ছবি ডাউনলোড হয়েছে।");
+      }).catch(function () { toast("ডাউনলোড ব্যর্থ হয়েছে।"); })
+        .then(function () { btn.disabled = false; });
+    });
     document.addEventListener("keydown", function (e) {
       if (!$("lightbox").classList.contains("open")) return;
       if (e.key === "Escape") $("lightbox").classList.remove("open");
