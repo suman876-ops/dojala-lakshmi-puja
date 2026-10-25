@@ -184,7 +184,7 @@
     return mode === "all" ? (g.puja || []).concat(g.committee || []) : (g[mode] || []);
   }
   function card(p, idx, list) {
-    var badge = (list.indexOf("gallery.") === 0 && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
+    var badge = ((list.indexOf("gallery.") === 0 || list.indexOf("year.") === 0) && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
     return '<figure class="gitem tilt" data-list="' + list + '" data-idx="' + idx + '">' + badge +
       '<img src="' + esc(p.src) + '" alt="' + esc(p.caption || "দোজলা লক্ষ্মীপূজার ছবি") + '" loading="lazy" decoding="async">' +
       '<span class="zoom"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg></span>' +
@@ -221,6 +221,7 @@
     var arr;
     if (list === "visitor") arr = DATA.visitorPhotos || [];
     else if (list.indexOf("gallery.") === 0) arr = resolve(galleryIds(list.split(".")[1]));
+    else if (list.indexOf("year.") === 0) arr = resolve((DATA.years || {})[list.split(".")[1]] || []);
     else arr = resolve(list.split(".").reduce(function (o, k) { return o && o[k]; }, DATA) || []);
     lb = arr; lbI = idx; showLb();
   }
