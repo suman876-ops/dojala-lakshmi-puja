@@ -403,8 +403,10 @@
       if (SB_ON) {
         var file = $("upFile")._file;
         if (!file) return toast("আগে একটি ছবি বেছে নিন।");
+        if (file.size > 5 * 1024 * 1024) return toast("ছবিটি ৫ MB-এর চেয়ে বড় — ছোট ছবি দিন।");
+        if (!/^image\//.test(file.type || "")) return toast("শুধু ছবি (JPG / PNG) দেওয়া যাবে।");
         toast("আপলোড হচ্ছে...");
-        SB.upload(file, "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
+        SB.upload(file, "visitor", "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
           .then(function () { $("upName").value = ""; $("upFile").value = ""; $("upFile")._file = null; $("upFile")._data = null; toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
           .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
         return;
@@ -461,7 +463,7 @@
         }).catch(function () { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।"; });
         return;
       }
-      if ($("admPass").value === DATA.adminPassword) { sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin(); }
+      if (DATA.adminPassword && $("admPass").value === DATA.adminPassword) { sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin(); }
       else { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।"; }
     });
     if ($("admPass")) $("admPass").addEventListener("keydown", function (e) { if (e.key === "Enter") $("loginBtn").click(); });
@@ -497,6 +499,8 @@
       if (!admFiles.length) return admMsg("আগে ধাপ ৩-এ একটি ছবি বেছে নিন।", false);
       if (!arr) return admMsg("ভুল বিভাগ।", false);
       var files = admFiles.slice();
+      var tooBig = files.filter(function (f) { return f.size > 8 * 1024 * 1024; });
+      if (tooBig.length) return admMsg("কিছু ছবি ৮ MB-এর চেয়ে বড় — সেগুলো বাদ দিন।", false);
       if (SB_ON) {
         var parts = cat.split(".");
         var category = parts[0] === "gallery" ? parts[1] : "puja";
