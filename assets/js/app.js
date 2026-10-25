@@ -140,6 +140,17 @@
     qsa("section[id]").forEach(function (s) { so.observe(s); });
   }
 
+  /* ---------- live clock ---------- */
+  function clock() {
+    var el = $("liveTime"); if (!el) return;
+    function upd() {
+      var d = new Date(), h = d.getHours(), ap = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      el.textContent = h + ":" + pad(d.getMinutes()) + " " + ap;
+    }
+    upd(); setInterval(upd, 15000);
+  }
+
   /* ---------- tilt ---------- */
   function tilt() {
     if (window.matchMedia("(pointer:coarse)").matches) return;
@@ -169,7 +180,8 @@
   function ph(id) { return (DATA.photos && DATA.photos[id]) || { src: "", caption: "" }; }
   function resolve(arr) { return (arr || []).map(ph); }
   function card(p, idx, list) {
-    return '<figure class="gitem tilt" data-list="' + list + '" data-idx="' + idx + '">' +
+    var badge = (list.indexOf("gallery.") === 0 && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
+    return '<figure class="gitem tilt" data-list="' + list + '" data-idx="' + idx + '">' + badge +
       '<img src="' + esc(p.src) + '" alt="' + esc(p.caption || "দোজলা লক্ষ্মীপূজার ছবি") + '" loading="lazy" decoding="async">' +
       '<span class="zoom"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg></span>' +
       '<figcaption class="cap">' + esc(p.caption || "") + (p.credit ? "<small>" + esc(p.credit) + "</small>" : "") + "</figcaption></figure>";
@@ -375,6 +387,17 @@
     qsa("[data-close]").forEach(function (b) { b.addEventListener("click", function () { $(b.dataset.close).classList.remove("open"); }); });
     qsa(".overlay").forEach(function (o) { o.addEventListener("click", function (e) { if (e.target === o) o.classList.remove("open"); }); });
 
+    if ($("shareWa")) $("shareWa").addEventListener("click", function () {
+      var u = location.href, t = "সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা — দোজলা মুড়াবনী";
+      window.open("https://wa.me/?text=" + encodeURIComponent(t + " " + u), "_blank");
+    });
+    if ($("copyLink")) $("copyLink").addEventListener("click", function () {
+      var u = location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(u).then(function () { toast("লিংক কপি হয়েছে!"); }, function () { toast(u); });
+      } else { toast(u); }
+    });
+
     adminEvents();
   }
 
@@ -445,7 +468,7 @@
       var d = $("admDate").value, p = $("admNewPass").value.trim();
       if (d) DATA.countdownTarget = d + "T18:00:00+05:30";
       if (p) DATA.adminPassword = p;
-      save(); $("cdDate").textContent = bnDate(DATA.countdownTarget); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
+      save(); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
     });
     if ($("admReset")) $("admReset").addEventListener("click", function () {
       if (!confirm("সব পরিবর্তন মুছে ডিফল্টে ফিরবেন?")) return;
@@ -524,7 +547,7 @@
   /* ---------- boot ---------- */
   function hideLoader() { if ($("loader")) $("loader").classList.add("done"); }
   document.addEventListener("DOMContentLoaded", function () {
-    embers(); parallax(); nav(); events();
+    embers(); parallax(); nav(); clock(); events();
     loadData();
     setTimeout(hideLoader, 650);
     setTimeout(revealAll, 1800);
