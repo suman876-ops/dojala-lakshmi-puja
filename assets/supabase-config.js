@@ -1,14 +1,16 @@
 /* ==========================================================================
    supabase-config.js  ·  Supabase সংযোগের সেটিংস
    --------------------------------------------------------------------------
-   Supabase ড্যাশবোর্ড → Project Settings → API থেকে দুটি মান এখানে বসান:
-     url     = Project URL        (যেমন https://abcdefgh.supabase.co)
-     anonKey = anon public key    (এটি সবার দেখার জন্য নিরাপদ key)
+   ✅ এই সাইটটি ইতিমধ্যেই একটি Supabase প্রজেক্টের সাথে যুক্ত করা হয়েছে।
+      Project: dojala-lakshmi-puja  (region: Mumbai / ap-south-1)
 
-   খালি রাখলে সাইট আগের মতোই (লোকাল মোডে) চলবে — কিছুই ভাঙবে না।
+   url     = Project URL
+   anonKey = anon public key  (এটি সবার দেখার জন্য নিরাপদ key — RLS দিয়ে সুরক্ষিত)
+
+   খালি করলে সাইট লোকাল মোডে চলবে।
    ========================================================================== */
 window.SUPABASE_CONFIG = {
-  url: "",
-  anonKey: "",
+  url: "https://ukwcmptmhpvysfnkdqhv.supabase.co",
+  anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVrd2NtcHRtaHB2eXNmbmtkcWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5MDQ0NzAsImV4cCI6MjEwODQ4MDQ3MH0.BMI2m4tQv2qaA_adbt3h0cfjx-J15Aw4H3gPrZNPKIs",
   bucket: "photos"
 };
