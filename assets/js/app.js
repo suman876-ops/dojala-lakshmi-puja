@@ -454,12 +454,11 @@
     });
     if ($("loginBtn")) $("loginBtn").addEventListener("click", function () {
       if (SB_ON) {
-        var em = ($("admEmail") && $("admEmail").value.trim()) || "";
-        if (!em) { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ইমেইল লিখুন।"; return; }
-        $("loginMsg").className = "panel-msg"; $("loginMsg").textContent = "লগইন হচ্ছে...";
-        SB.signIn(em, $("admPass").value).then(function () {
+        if (!$("admPass").value) { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "পাসওয়ার্ড লিখুন।"; return; }
+        $("loginMsg").className = "panel-msg"; $("loginMsg").textContent = "যাচাই করা হচ্ছে...";
+        SB.signIn(ADMIN_EMAIL, $("admPass").value).then(function () {
           sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin();
-        }).catch(function () { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল ইমেইল বা পাসওয়ার্ড।"; });
+        }).catch(function () { $("loginMsg").className = "panel-msg err"; $("loginMsg").textContent = "ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।"; });
         return;
       }
       if ($("admPass").value === DATA.adminPassword) { sessionStorage.setItem("dojala_admin", "1"); $("loginModal").classList.remove("open"); openAdmin(); }
@@ -653,6 +652,7 @@
 
   /* ---------- supabase sync ---------- */
   var SB_ON = false;
+  var ADMIN_EMAIL = "sumanmahata711@gmail.com";
   function sbReady() { return !!(window.SB && window.SB.configured()); }
   function applySB(photos, ann, greet, vis) {
     DATA.photos = {}; DATA.gallery = { puja: [], committee: [] }; DATA.years = {};
@@ -677,7 +677,6 @@
     return SB.load().then(function (ok) {
       if (!ok) return;
       SB_ON = true;
-      if ($("admEmailWrap")) $("admEmailWrap").hidden = false;
       return refreshFromSB();
     }).catch(function () {});
   }
