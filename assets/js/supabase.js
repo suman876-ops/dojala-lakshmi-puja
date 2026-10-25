@@ -44,15 +44,17 @@ window.SB = (function () {
   }
 
   /* ---------------- storage ---------------- */
-  function upload(file, prefix) {
+  function upload(file, prefix, bucket) {
+    var B = bucket || BUCKET;
     var name = (file && file.name) || "image.jpg";
     var ext = (name.split(".").pop() || "jpg").toLowerCase();
+    if (!/^(jpe?g|png|webp|gif)$/.test(ext)) ext = "jpg";
     var path = (prefix || "uploads") + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
-    return client.storage.from(BUCKET)
+    return client.storage.from(B)
       .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type || "image/jpeg" })
       .then(function (r) {
         if (r.error) throw r.error;
-        return client.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+        return client.storage.from(B).getPublicUrl(path).data.publicUrl;
       });
   }
 
