@@ -120,23 +120,6 @@
     });
   }
 
-  /* ---------- countdown ---------- */
-  function cdTarget() {
-    if (DATA.countdownTarget) { var t = new Date(DATA.countdownTarget).getTime(); if (!isNaN(t)) return t; }
-    var d = new Date(); d.setHours(19, 0, 0, 0); return d.getTime();
-  }
-  function tick() {
-    var d = cdTarget() - Date.now();
-    if (d < 0) d = 0;
-    var days = Math.floor(d / 864e5), h = Math.floor(d % 864e5 / 36e5), m = Math.floor(d % 36e5 / 6e4), s = Math.floor(d % 6e4 / 1e3);
-    if ($("cd-d")) $("cd-d").textContent = toBn(pad(days));
-    if ($("cd-h")) $("cd-h").textContent = toBn(pad(h));
-    if ($("cd-m")) $("cd-m").textContent = toBn(pad(m));
-    if ($("cd-s")) $("cd-s").textContent = toBn(pad(s));
-    var st = $("cdStatus");
-    if (st) { if (d <= 0) { st.textContent = "ঘট উত্তোলন শুরু হয়েছে"; st.classList.add("live"); } else { st.textContent = ""; st.classList.remove("live"); } }
-  }
-
   /* ---------- nav ---------- */
   function nav() {
     if ($("menuBtn")) $("menuBtn").addEventListener("click", function () { $("navLinks").classList.toggle("open"); });
@@ -429,7 +412,7 @@
     qsa(".overlay").forEach(function (o) { o.addEventListener("click", function (e) { if (e.target === o) o.classList.remove("open"); }); });
 
     if ($("shareWa")) $("shareWa").addEventListener("click", function () {
-      var u = location.href, t = "সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা — দোজলা মুড়াবনী";
+      var u = location.href, t = "সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা — দোজলা";
       window.open("https://wa.me/?text=" + encodeURIComponent(t + " " + u), "_blank");
     });
     if ($("copyLink")) $("copyLink").addEventListener("click", function () {
@@ -574,8 +557,7 @@
       save(); renderAdmGreet(); renderGreet(); renderVisitor(); admMsg("মুছে ফেলা হয়েছে।", true);
     });
     if ($("admSaveSettings")) $("admSaveSettings").addEventListener("click", function () {
-      var d = $("admDate").value, p = $("admNewPass").value.trim();
-      if (d) DATA.countdownTarget = d + "T18:00:00+05:30";
+      var p = $("admNewPass").value.trim();
       if (p) DATA.adminPassword = p;
       save(); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
     });
@@ -607,7 +589,6 @@
     Object.keys(DATA.photos || {}).forEach(function (id) { if (!used[id]) delete DATA.photos[id]; });
   }
   function renderAdmin() {
-    if ($("admDate")) $("admDate").value = (DATA.countdownTarget || "").slice(0, 10);
     renderAdmPhotos(); renderAdmNotices(); renderAdmGreet();
   }
   function renderAdmPhotos() {
@@ -646,7 +627,6 @@
   function renderAll() {
     renderNotices(); renderGallery(); renderYearTabs(); renderYear(); renderGreet(); renderVisitor();
     music();
-    if ($("cdDate")) $("cdDate").textContent = bnDate(DATA.countdownTarget);
     if ($("yr")) $("yr").textContent = toBn(new Date().getFullYear());
     var fb = DATA.facebook || {};
     if ($("fbPuja") && fb.puja) $("fbPuja").href = fb.puja.url;
@@ -691,7 +671,6 @@
     embers(); parallax(); nav(); clock(); events();
     loadData();
     if (sbReady()) initSB();
-    tick(); setInterval(tick, 1000);
     setTimeout(hideLoader, 650);
     setTimeout(revealAll, 1800);
   });
