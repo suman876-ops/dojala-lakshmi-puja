@@ -25,8 +25,8 @@
 <link rel="apple-touch-icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Tiro+Bangla:ital@0;1&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Tiro+Bangla:ital@0;1&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Event","name":"সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা (Dojala Lakshmi Puja)","startDate":"2027-10-14T18:00:00+05:30","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"দোজলা, মুড়াবনী","address":{"@type":"PostalAddress","addressLocality":"Dojala, Muraboni","addressRegion":"West Bengal","addressCountry":"IN","postalCode":"721507"}},"description":"কোজাগরী লক্ষ্মীপূজা — দোজলা মুড়াবনী, ঝাড়গ্রাম।","organizer":{"@type":"Organization","name":"Dojala Lakshmi Puja Committee"}}
@@ -67,34 +67,40 @@
 
 <!-- ============ HERO ============ -->
 <section id="home" class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-veil" aria-hidden="true"></div>
   <div class="scene">
     <div class="layer stars" id="stars" data-mx="14"></div>
-    <div class="moon" data-par="0.12"></div>
-    <div class="orb" aria-hidden="true"><span class="ring"></span><span class="ring"></span><span class="core"></span></div>
     <canvas id="embers"></canvas>
   </div>
   <div class="hero-card">
-    <div class="hero-inner tilt">
-      <p class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3c3 4 3 8 0 11-3-3-3-7 0-11z"/><path d="M5 18h14"/></svg>কোজাগরী পূর্ণিমা • শারদ শুভেচ্ছা</p>
-      <h1>সার্বজনীন<br><span class="g">শ্রী শ্রী লক্ষ্মীপূজা</span></h1>
+    <div class="hero-inner">
+      <p class="hero-eyebrow">কোজাগরী পূজা ২০২৬</p>
+      <h1 class="hero-title">মা লক্ষ্মী আসছেন...</h1>
       <p class="latin">Dojala Lakshmi Puja</p>
-      <p class="loc">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <b>দোজলা, মুড়াবনী</b> — ঝাড়গ্রাম, পশ্চিমবঙ্গ
-      </p>
-      <div class="date-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
-        <span>আগামী পূজা — <b id="cdDate">১৪ অক্টোবর ২০২৭</b></span>
+      <div class="infoboxes">
+        <div class="ib"><b>১৪ অক্টোবর</b><span>তারিখ</span></div>
+        <div class="ib"><b>পূর্ণিমা</b><span>তিথি</span></div>
+        <div class="ib"><b>সন্ধ্যা ৬টা</b><span>সময়</span></div>
+        <div class="ib"><b>দোজলা</b><span>স্থান</span></div>
       </div>
+      <p class="hero-tag"><b>সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা</b> · মায়ের আগমনী বেলায়</p>
       <div class="cta">
-        <a class="btn btn-gold" href="#gallery">
+        <a class="btn btn-red" href="#gallery">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>
-          ছবির গ্যালারি
+          উৎসবে প্রবেশ করুন
         </a>
         <a class="btn btn-ghost" href="#music">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          পূজার গান শুনুন
+          শব্দসহ দেখুন
         </a>
+      </div>
+      <div class="locbar">
+        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <b>দোজলা, মুড়াবনী</b>
+        <span class="dot"></span>
+        <svg class="clock" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span id="liveTime">--:--</span>
       </div>
     </div>
   </div>
@@ -146,20 +152,29 @@
   </div>
 </section>
 
-<!-- ============ GALLERY ============ -->
-<section id="gallery">
+<!-- ============ GALLERY (light showcase) ============ -->
+<section id="gallery" class="light showcase-sec">
   <div class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>ফটো গ্যালারি</p>
-      <h2>আমাদের <span class="g">স্মৃতি</span></h2>
-      <div class="orn"><i></i><b></b><i></i></div>
-      <p>কমিটির ছবি ও গ্রামের পূজার ছবি — সব একসঙ্গে।</p>
+    <div class="showcase-head reveal">
+      <h2 class="showcase-title"><span class="l1">পূজার মুহূর্ত</span><span class="l2">গ্যালারি শোকেস</span></h2>
+      <div class="showcase-actions">
+        <a class="btn btn-line" href="#years">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          সম্পূর্ণ গ্যালারি দেখুন
+        </a>
+        <a class="btn btn-red" href="#upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          আপনার ছবি আপলোড করুন
+        </a>
+      </div>
     </div>
     <div class="tabs reveal">
       <button class="tab active" data-gtab="puja">গ্রামের পূজার ছবি</button>
       <button class="tab" data-gtab="committee">কমিটির ছবি</button>
     </div>
-    <div class="grid" id="galleryGrid"></div>
+    <div class="showcase-card reveal">
+      <div class="grid" id="galleryGrid"></div>
+    </div>
     <p class="gal-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>আমাদের পূজার কিছু স্মরণীয় মুহূর্ত</p>
   </div>
 </section>
@@ -311,18 +326,55 @@
   </div>
 </section>
 
-<!-- ============ FOOTER ============ -->
-<footer id="footer">
+<!-- ============ TEASER / CREDITS ============ -->
+<section id="credits" class="teaser-sec">
   <div class="wrap">
-    <div class="fbrand">সার্বজনীন শ্রী শ্রী লক্ষ্মীপূজা</div>
-    <p class="hint" style="margin-top:6px">দোজলা, মুড়াবনী — ঝাড়গ্রাম, পশ্চিমবঙ্গ</p>
-    <div class="socials">
-      <a href="https://www.facebook.com/share/1Dez2XbSWe/" target="_blank" rel="noopener" title="লক্ষ্মীপূজা পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
-      <a href="https://www.facebook.com/share/1DTpnr5XSQ/" target="_blank" rel="noopener" title="Dojala পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+    <div class="teaser reveal">
+      <h2 class="teaser-title">বিদায় বেলা</h2>
+      <p>আশ্বিনের পূর্ণিমা শেষে মা লক্ষ্মী ফিরে যান স্বর্গপুরে। তবু তাঁর আশীর্বাদ থেকে যায় ঘরে ঘরে — সুখ, সমৃদ্ধি আর শান্তির প্রতিশ্রুতি হয়ে।</p>
+      <p class="teaser-line">তাই বিদায় নয় মা, আবার এসো...</p>
+      <p class="teaser-share">শারদীয়ার অনুভূতি ভাগ করে নিন</p>
+      <div class="teaser-socials">
+        <button class="tsoc" id="shareWa" title="WhatsApp-এ শেয়ার"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.2.2-.3.2-.5s0-.4-.1-.5c-.1-.1-.5-1.3-.7-1.8-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 2.6 1.1 2.6.7 3.1.7.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2z"/></svg></button>
+        <a class="tsoc" href="https://www.facebook.com/share/1Dez2XbSWe/" target="_blank" rel="noopener" title="লক্ষ্মীপূজা ফেসবুক পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+        <a class="tsoc" href="https://www.facebook.com/share/1DTpnr5XSQ/" target="_blank" rel="noopener" title="Dojala ফেসবুক পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+        <button class="tsoc" id="copyLink" title="লিংক কপি করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></button>
+      </div>
+      <div class="teaser-meta">
+        <b>দোজলা লক্ষ্মীপূজা ২০২৬</b>
+        <span>A Cinematic Digital Experience</span>
+      </div>
+      <div class="teaser-block">
+        <span class="tb-label">Creator</span>
+        <b>Suman Mahata</b>
+        <div class="tb-socials">
+          <a class="tsoc" href="https://suman876-ops.github.io/suman-portfolio/" target="_blank" rel="noopener" title="পোর্টফোলিও"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg></a>
+          <a class="tsoc" href="https://www.facebook.com/share/1DTpnr5XSQ/" target="_blank" rel="noopener" title="ফেসবুক"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+        </div>
+      </div>
+      <div class="teaser-block">
+        <span class="tb-label">পেজ পরিচালনায়</span>
+        <b>Subhankar Patra · Joydweep Das</b>
+        <div class="tb-socials">
+          <a class="tsoc" href="https://www.facebook.com/share/1Dez2XbSWe/" target="_blank" rel="noopener" title="লক্ষ্মীপূজা পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+          <a class="tsoc" href="https://www.facebook.com/share/1DTpnr5XSQ/" target="_blank" rel="noopener" title="Dojala পেজ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+        </div>
+      </div>
+      <p class="teaser-rights">All rights reserved by Dojala Lakshmi Puja Committee</p>
     </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="footer" class="light">
+  <div class="wrap">
+    <div class="dev-pill"><i></i> ওয়েবসাইট নির্মাণাধীন — নতুন ফিচার যোগ করা হচ্ছে</div>
     <div class="love">I <svg class="h" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg> <b>Dojala</b></div>
     <p class="dev">Designed &amp; Deployed by <a href="https://suman876-ops.github.io/suman-portfolio/" target="_blank" rel="noopener">Suman Mahata</a></p>
-    <p class="small">© <span id="yr">২০২৬</span> Dojala Lakshmi Puja Committee</p>
+    <div class="foot-row">
+      <span class="left">© <span id="yr">২০২৬</span> দোজলা লক্ষ্মীপূজা কমিটি <span>•</span> শারদোৎসব ১৪৩২</span>
+      <span class="crafted">Crafted with <svg viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg> for Dojala</span>
+    </div>
   </div>
 </footer>
 
@@ -397,7 +449,7 @@
       </div>
 
       <div class="ptab-body" data-pbody="settings" hidden>
-        <div class="field"><label>পূজার তারিখ (কাউন্টডাউন)</label><input id="admDate" type="date"></div>
+        <div class="field"><label>পূজার তারিখ</label><input id="admDate" type="date"></div>
         <div class="field"><label>নতুন অ্যাডমিন পাসওয়ার্ড</label><input id="admNewPass" type="text" placeholder="নতুন পাসওয়ার্ড" maxlength="40"></div>
         <button class="btn btn-gold" id="admSaveSettings">সেটিংস সংরক্ষণ করুন</button>
         <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
