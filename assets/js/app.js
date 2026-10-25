@@ -176,9 +176,13 @@
   }
 
   /* ---------- gallery ---------- */
-  var gMode = "puja";
+  var gMode = "all";
   function ph(id) { return (DATA.photos && DATA.photos[id]) || { src: "", caption: "" }; }
   function resolve(arr) { return (arr || []).map(ph); }
+  function galleryIds(mode) {
+    var g = DATA.gallery || {};
+    return mode === "all" ? (g.puja || []).concat(g.committee || []) : (g[mode] || []);
+  }
   function card(p, idx, list) {
     var badge = (list.indexOf("gallery.") === 0 && p.tag) ? '<span class="badge ' + (p.tagType === "live" ? "live" : "arch") + '">' + esc(p.tag) + "</span>" : "";
     return '<figure class="gitem tilt" data-list="' + list + '" data-idx="' + idx + '">' + badge +
@@ -187,7 +191,7 @@
       '<figcaption class="cap">' + esc(p.caption || "") + (p.credit ? "<small>" + esc(p.credit) + "</small>" : "") + "</figcaption></figure>";
   }
   function renderGallery() {
-    var arr = (DATA.gallery && DATA.gallery[gMode]) || [], g = $("galleryGrid"); if (!g) return;
+    var arr = galleryIds(gMode), g = $("galleryGrid"); if (!g) return;
     g.innerHTML = arr.length ? arr.map(function (id, i) { return card(ph(id), i, "gallery." + gMode); }).join("")
       : '<div class="empty">এই বিভাগে এখনো কোনো ছবি নেই। অ্যাডমিন প্যানেল থেকে ছবি যোগ করুন।</div>';
     tilt();
@@ -214,8 +218,11 @@
   /* ---------- lightbox ---------- */
   var lb = [], lbI = 0;
   function openLb(list, idx) {
-    lb = list === "visitor" ? (DATA.visitorPhotos || []) : resolve(list.split(".").reduce(function (o, k) { return o && o[k]; }, DATA) || []);
-    lbI = idx; showLb();
+    var arr;
+    if (list === "visitor") arr = DATA.visitorPhotos || [];
+    else if (list.indexOf("gallery.") === 0) arr = resolve(galleryIds(list.split(".")[1]));
+    else arr = resolve(list.split(".").reduce(function (o, k) { return o && o[k]; }, DATA) || []);
+    lb = arr; lbI = idx; showLb();
   }
   function showLb() {
     var p = lb[lbI]; if (!p) return;
