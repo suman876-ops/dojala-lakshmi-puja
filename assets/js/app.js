@@ -28,9 +28,10 @@
   function loadData() {
     var base = JSON.parse(JSON.stringify(DEFAULT));
     function finish() {
-      try { var ls = JSON.parse(localStorage.getItem(LS) || "null"); if (ls && typeof ls === "object") { DATA = ls; return; } } catch (e) {}
+      try { var ls = JSON.parse(localStorage.getItem(LS) || "null"); if (ls && typeof ls === "object") { DATA = ls; renderAll(); bootState.data = true; bootCheck(); return; } } catch (e) {}
       DATA = base;
       renderAll();
+      bootState.data = true; bootCheck();
     }
     try {
       fetch("data.json", { cache: "no-store" }).then(function (r) {
@@ -868,40 +869,56 @@
   }
   function refreshFromSB() {
     return Promise.all([SB.listPhotos(), SB.listAnnouncements(), SB.listGreetings(), SB.listVisitor()])
-      .then(function (r) { applySB(r[0], r[1], r[2], r[3]); renderAll(); renderAdmin(); });
+      .then(function (r) { applySB(r[0], r[1], r[2], r[3]); renderAll(); renderAdmin(); bootState.data = true; bootCheck(); });
   }
   function initSB() {
     return SB.load().then(function (ok) {
       if (!ok) return;
       SB_ON = true;
       return refreshFromSB();
-    }).catch(function () {});
+    }).catch(function () {}).then(function () { bootState.sb = true; bootCheck(); });
   }
 
   /* ---------- boot ---------- */
-  function hideLoader() { if ($("loader")) $("loader").classList.add("done"); }
-  /* boot counter 0 -> 100 */
+  var bootState = { load: false, data: false, sb: false };
+  var bootTimer = null, bootHidden = false;
+  function hideLoader() {
+    if (bootHidden) return;
+    bootHidden = true;
+    if ($("loader")) $("loader").classList.add("done");
+  }
+  function bootCheck() {
+    if (bootState.load && bootState.data && bootState.sb) bootDone();
+  }
   function bootCounter() {
     var pct = $("ldPct"), bar = $("ldBar");
     if (!pct && !bar) return;
-    var start = Date.now(), dur = 1150;
-    var t = setInterval(function () {
-      var p = Math.min(1, (Date.now() - start) / dur);
-      var n = Math.round(p * 100);
+    var start = Date.now();
+    bootTimer = setInterval(function () {
+      var n = Math.min(95, Math.round((Date.now() - start) / 900 * 100));
       if (pct) pct.textContent = toBn(n) + "%";
       if (bar) bar.style.width = n + "%";
-      if (p >= 1) clearInterval(t);
-    }, 16);
+    }, 40);
+  }
+  function bootDone() {
+    if (bootTimer) { clearInterval(bootTimer); bootTimer = null; }
+    var pct = $("ldPct"), bar = $("ldBar");
+    if (pct) pct.textContent = "১০০%";
+    if (bar) bar.style.width = "100%";
+    setTimeout(hideLoader, 300);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     bootCounter();
     embers(); parallax(); nav(); clock(); events();
     loadData();
-    if (sbReady()) initSB();
-    setTimeout(hideLoader, 650);
+    if (sbReady()) initSB(); else bootState.sb = true;
     setTimeout(revealAll, 1800);
+    /* safety: never stay on the boot screen for more than 9 seconds */
+    setTimeout(function () {
+      bootState.load = true; bootState.data = true; bootState.sb = true;
+      bootCheck();
+    }, 9000);
   });
-  window.addEventListener("load", hideLoader);
-  setTimeout(hideLoader, 2600);
+  window.addEventListener("load", function () { bootState.load = true; bootCheck(); });
 })();
