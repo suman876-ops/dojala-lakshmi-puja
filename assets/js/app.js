@@ -543,12 +543,22 @@
       if (e.target && e.target.closest && e.target.closest("#upPrevX")) clearUpPreview();
     });
     if ($("upSubmit")) $("upSubmit").addEventListener("click", function () {
+      var btn = this;
+      if (btn.disabled) return;
       var n = $("upName").value.trim();
+      function needPhoto() {
+        toast("আগে একটি ছবি বেছে নিন।");
+        var d = $("upDrop");
+        if (d) { d.classList.add("need"); setTimeout(function () { d.classList.remove("need"); }, 950); }
+      }
       if (SB_ON) {
         var file = $("upFile")._file;
-        if (!file) return toast("আগে একটি ছবি বেছে নিন।");
+        if (!file) return needPhoto();
         if (!/^image\//.test(file.type || "")) return toast("শুধু ছবি (JPG / PNG) দেওয়া যাবে।");
         var pr = progressCtl("upProg", "upProgBar", "upProgPct");
+        var label = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>আপলোড হচ্ছে...';
         pr.start(); toast("আপলোড হচ্ছে...");
         shrinkBlobSafe(file)
           .then(function (out) {
@@ -558,15 +568,17 @@
                 DATA.visitorPhotos.push({ name: n, src: url, id: row && row.id });
                 var cy = new Date().getFullYear();
                 DATA.years = DATA.years || {}; DATA.years[cy] = DATA.years[cy] || [];
-                renderVisitor(); renderYearTabs(); renderYear();
+                try { renderVisitor(); renderYearTabs(); renderYear(); } catch (e) {}
+                return url;
               });
             });
           })
           .then(function () { pr.done(); clearUpPreview(); toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); return refreshFromSB(); })
-          .catch(function () { pr.fail(); toast("আপলোড ব্যর্থ হয়েছে।"); });
+          .catch(function () { pr.fail(); toast("আপলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"); })
+          .then(function () { btn.disabled = false; btn.innerHTML = label; });
         return;
       }
-      var d = $("upFile")._data; if (!d) return toast("আগে একটি ছবি বেছে নিন।");
+      var d = $("upFile")._data; if (!d) return needPhoto();
       DATA.visitorPhotos = DATA.visitorPhotos || [];
       DATA.visitorPhotos.push({ name: n, src: d });
       save(); renderVisitor(); renderYear(); clearUpPreview();
@@ -650,6 +662,7 @@
       admFiles.splice(+b.dataset.rfi, 1); renderAdmPreview();
     });
     if ($("admUpload")) $("admUpload").addEventListener("click", function () {
+      var btn = this; if (btn.disabled) return;
       var cat = $("admCat").value, cap = $("admCap").value.trim(), arr = admListFor(cat);
       if (!admFiles.length) return admMsg("আগে ধাপ ৩-এ একটি ছবি বেছে নিন।", false);
       if (!arr) return admMsg("ভুল বিভাগ।", false);
@@ -682,16 +695,18 @@
               var y = row.year || new Date().getFullYear();
               DATA.years[y] = DATA.years[y] || []; DATA.years[y].push(row.id);
             });
-            if (added.length) renderAll();
+            if (added.length) { try { renderAll(); } catch (e) {} }
             pr.done();
             admFiles = []; renderAdmPreview(); $("admCap").value = "";
             admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
             return refreshFromSB();
-          }).catch(function (e) { pr.fail(); admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); });
+          }).catch(function (e) { pr.fail(); admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); })
+            .then(function () { btn.disabled = false; });
         };
         admMsg("যাচাই করা হচ্ছে...", true);
+        btn.disabled = true;
         SB.currentUser().then(function (u) {
-          if (!u) { admMsg("লগইন শেষ হয়ে গেছে — আবার পাসওয়ার্ড দিয়ে লগইন করে চেষ্টা করুন।", false); return; }
+          if (!u) { btn.disabled = false; admMsg("লগইন শেষ হয়ে গেছে — আবার পাসওয়ার্ড দিয়ে লগইন করে চেষ্টা করুন।", false); return; }
           run();
         }).catch(function () { run(); });
         return;
