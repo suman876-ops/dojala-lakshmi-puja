@@ -312,11 +312,11 @@
     r.onload = function () {
       var img = new Image();
       img.onload = function () {
-        var m = 1400, w = img.width, h = img.height;
+        var m = 1280, w = img.width, h = img.height;
         if (Math.max(w, h) > m) { var s = m / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
         var c = document.createElement("canvas"); c.width = w; c.height = h;
         c.getContext("2d").drawImage(img, 0, 0, w, h);
-        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.78); } catch (e) { cb(file); }
+        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.76); } catch (e) { cb(file); }
       };
       img.onerror = function () { cb(file); };
       img.src = r.result;
@@ -333,6 +333,42 @@
         res(out);
       });
     });
+  }
+
+  /* compress, but never block the upload if compression stalls */
+  function shrinkBlobSafe(file) {
+    return new Promise(function (res) {
+      var done = false;
+      var t = setTimeout(function () { if (!done) { done = true; res(file); } }, 3500);
+      try {
+        shrinkBlob(file).then(function (out) { if (done) return; done = true; clearTimeout(t); res(out); });
+      } catch (e) { if (!done) { done = true; clearTimeout(t); res(file); } }
+    });
+  }
+
+  /* upload progress 0 -> 100 */
+  function progressCtl(boxId, barId, pctId) {
+    var box = $(boxId), bar = $(barId), pct = $(pctId), t = null;
+    function paint(n) { if (bar) bar.style.width = n + "%"; if (pct) pct.textContent = toBn(n) + "%"; }
+    return {
+      start: function () {
+        if (box) box.hidden = false;
+        paint(0);
+        var n = 0;
+        if (t) clearInterval(t);
+        t = setInterval(function () { n = Math.min(93, n + Math.max(1, Math.round((93 - n) / 9))); paint(n); }, 80);
+      },
+      done: function () {
+        if (t) { clearInterval(t); t = null; }
+        paint(100);
+        setTimeout(function () { if (box) box.hidden = true; paint(0); }, 900);
+      },
+      fail: function () {
+        if (t) { clearInterval(t); t = null; }
+        if (box) box.hidden = true;
+        paint(0);
+      }
+    };
   }
 
   /* ---------- music player ---------- */
@@ -512,14 +548,22 @@
         var file = $("upFile")._file;
         if (!file) return toast("আগে একটি ছবি বেছে নিন।");
         if (!/^image\//.test(file.type || "")) return toast("শুধু ছবি (JPG / PNG) দেওয়া যাবে।");
-        toast("আপলোড হচ্ছে...");
-        shrinkImage(file, function (blob) {
-          var out = blob;
-          try { if (blob && !(blob instanceof File)) out = new File([blob], "photo.jpg", { type: "image/jpeg" }); } catch (e) { out = file; }
-          SB.upload(out, "visitor", "visitor").then(function (url) { return SB.addVisitor(n, url); }).then(function () { return refreshFromSB(); })
-            .then(function () { clearUpPreview(); toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); })
-            .catch(function () { toast("আপলোড ব্যর্থ হয়েছে।"); });
-        });
+        var pr = progressCtl("upProg", "upProgBar", "upProgPct");
+        pr.start(); toast("আপলোড হচ্ছে...");
+        shrinkBlobSafe(file)
+          .then(function (out) {
+            return SB.upload(out, "visitor", "visitor").then(function (url) {
+              return SB.addVisitor(n, url).then(function (row) {
+                DATA.visitorPhotos = DATA.visitorPhotos || [];
+                DATA.visitorPhotos.push({ name: n, src: url, id: row && row.id });
+                var cy = new Date().getFullYear();
+                DATA.years = DATA.years || {}; DATA.years[cy] = DATA.years[cy] || [];
+                renderVisitor(); renderYearTabs(); renderYear();
+              });
+            });
+          })
+          .then(function () { pr.done(); clearUpPreview(); toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); return refreshFromSB(); })
+          .catch(function () { pr.fail(); toast("আপলোড ব্যর্থ হয়েছে।"); });
         return;
       }
       var d = $("upFile")._data; if (!d) return toast("আগে একটি ছবি বেছে নিন।");
@@ -615,23 +659,35 @@
       if (SB_ON) {
         var parts = cat.split(".");
         var category = parts[0] === "gallery" ? parts[1] : "puja";
-        var year = parts[0] === "year" ? parseInt(parts[1], 10) : null;
+        var year = parts[0] === "year" ? parseInt(parts[1], 10) : new Date().getFullYear();
+        var pr = progressCtl("admProg", "admProgBar", "admProgPct");
         var run = function () {
-          var chain = Promise.resolve();
+          pr.start();
+          var chain = Promise.resolve(), added = [];
           files.forEach(function (f, i) {
             chain = chain.then(function () {
               admMsg("আপলোড হচ্ছে... (" + toBn(i + 1) + "/" + toBn(files.length) + ")", true);
-              return shrinkBlob(f).then(function (out) {
+              return shrinkBlobSafe(f).then(function (out) {
                 return SB.upload(out, "gallery").then(function (url) {
                   return SB.addPhoto({ url: url, caption: cap || "", tag: "এই বছর", tag_type: "live", category: category, year: year, sort: Date.now() + i });
                 });
-              });
+              }).then(function (row) { if (row && row.id) added.push(row); });
             });
           });
-          chain.then(function () { return refreshFromSB(); }).then(function () {
+          chain.then(function () {
+            added.forEach(function (row) {
+              DATA.photos[row.id] = { src: row.url, caption: row.caption || "", tag: row.tag || "", tagType: row.tag_type || "live" };
+              var c = row.category === "committee" ? "committee" : "puja";
+              DATA.gallery[c] = DATA.gallery[c] || []; DATA.gallery[c].push(row.id);
+              var y = row.year || new Date().getFullYear();
+              DATA.years[y] = DATA.years[y] || []; DATA.years[y].push(row.id);
+            });
+            if (added.length) renderAll();
+            pr.done();
             admFiles = []; renderAdmPreview(); $("admCap").value = "";
             admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
-          }).catch(function (e) { admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); });
+            return refreshFromSB();
+          }).catch(function (e) { pr.fail(); admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); });
         };
         admMsg("যাচাই করা হচ্ছে...", true);
         SB.currentUser().then(function (u) {
