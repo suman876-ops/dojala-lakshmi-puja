@@ -60,9 +60,12 @@ window.SB = (function () {
 
   /* ---------------- photos ---------------- */
   function listPhotos() {
-    return client.from("photos").select("*").order("sort", { ascending: true }).then(function (r) {
-      if (r.error) throw r.error; return r.data || [];
-    });
+    return client.from("photos").select("*")
+      .order("tag_type", { ascending: false })
+      .order("sort", { ascending: true })
+      .then(function (r) {
+        if (r.error) throw r.error; return r.data || [];
+      });
   }
   function addPhoto(row) {
     return client.from("photos").insert(row).select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
