@@ -63,8 +63,7 @@ section{position:relative;padding:clamp(64px,9vw,116px) 0}
 
 /* ---------- preloader ---------- */
 #loader{position:fixed;inset:0;z-index:200;display:grid;place-items:center;
-  background:radial-gradient(600px 500px at 50% 40%,#f7efdd,#faf5ea 75%);transition:opacity .6s,visibility .6s;
-  animation:loaderOut .5s ease 1.3s forwards}
+  background:radial-gradient(600px 500px at 50% 40%,#f7efdd,#faf5ea 75%);transition:opacity .55s,visibility .55s}
 #loader.done{opacity:0;visibility:hidden}
 @keyframes loaderOut{to{opacity:0;visibility:hidden}}
 .load-flame{width:64px;height:92px;position:relative;animation:lf 1.4s ease-in-out infinite;margin:0 auto}
