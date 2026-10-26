@@ -42,16 +42,27 @@ window.SITE_DEFAULT = {
     p30: { src: "assets/img/p30.webp", caption: "নাচে-গানে উৎসব", tag: "পুরনো স্মৃতি", tagType: "arch" },
     p31: { src: "assets/img/p31.webp", caption: "ভক্তের প্রণাম", tag: "পুরনো স্মৃতি", tagType: "arch" },
     p32: { src: "assets/img/p32.webp", caption: "উৎসবে তরুণেরা", tag: "পুরনো স্মৃতি", tagType: "arch" },
-    p33: { src: "assets/img/p33.webp", caption: "গ্রামের ছেলেদের আড্ডা", tag: "পুরনো স্মৃতি", tagType: "arch" }
+    p33: { src: "assets/img/p33.webp", caption: "গ্রামের ছেলেদের আড্ডা", tag: "পুরনো স্মৃতি", tagType: "arch" },
+    p34: { src: "assets/img/p34.webp", caption: "মায়ের পাশে ভক্ত", tag: "এই বছর", tagType: "live" },
+    p35: { src: "assets/img/p35.webp", caption: "নদী থেকে ঘট আনা", tag: "এই বছর", tagType: "live" },
+    p36: { src: "assets/img/p36.webp", caption: "ঘট নিয়ে গ্রামের ছেলেরা", tag: "এই বছর", tagType: "live" },
+    p37: { src: "assets/img/p37.webp", caption: "রাতে ভোগ বিতরণ", tag: "এই বছর", tagType: "live" },
+    p38: { src: "assets/img/p38.webp", caption: "ঘট নিয়ে নদীতে", tag: "এই বছর", tagType: "live" },
+    p39: { src: "assets/img/p39.webp", caption: "মণ্ডপে প্রণাম", tag: "এই বছর", tagType: "live" },
+    p40: { src: "assets/img/p40.webp", caption: "সকলে মিলে ভোগ", tag: "এই বছর", tagType: "live" },
+    p41: { src: "assets/img/p41.webp", caption: "মণ্ডপে সেবাদার", tag: "এই বছর", tagType: "live" },
+    p42: { src: "assets/img/p42.webp", caption: "বটতলায় ঘট নিয়ে", tag: "এই বছর", tagType: "live" },
+    p43: { src: "assets/img/p43.webp", caption: "ঘট নিয়ে শোভাযাত্রা", tag: "এই বছর", tagType: "live" },
+    p44: { src: "assets/img/p44.webp", caption: "অর্ঘ্য সাজানো", tag: "এই বছর", tagType: "live" }
   },
 
   gallery: {
-    puja:      ["p1", "p2", "p3", "p4", "p5", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28", "p29", "p30", "p31", "p32", "p33"],
+    puja:      ["p1", "p2", "p3", "p4", "p5", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28", "p29", "p30", "p31", "p32", "p33", "p34", "p35", "p36", "p37", "p38", "p39", "p40", "p41", "p42", "p43", "p44"],
     committee: ["p6", "p7"]
   },
 
   years: {
-    "2026": [],
+    "2026": ["p34", "p35", "p36", "p37", "p38", "p39", "p40", "p41", "p42", "p43", "p44"],
     "2025": ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12", "p13", "p14", "p15", "p16", "p17", "p18", "p19", "p20", "p21", "p22", "p23", "p24", "p25", "p26", "p27", "p28", "p29", "p30", "p31", "p32", "p33"],
     "2024": [], "2023": [], "2022": [], "2021": [], "2020": []
   },
