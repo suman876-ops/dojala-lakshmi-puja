@@ -675,6 +675,20 @@
     if ($("admSearch")) $("admSearch").addEventListener("input", function () {
       admQuery = this.value.trim().toLowerCase(); renderAdmPhotos();
     });
+    if ($("admSaveBase")) $("admSaveBase").addEventListener("click", function () {
+      var v = parseInt($("admBaseVisits").value, 10);
+      if (isNaN(v) || v < 0) v = 0;
+      if (!SB_ON || !SB.setBaseVisits) return admMsg("ডেটাবেসে সংযোগ নেই।", false);
+      SB.setBaseVisits(v).then(function () {
+        try { sessionStorage.removeItem("dojala_visits"); } catch (e) {}
+        admMsg("Visitors শুরুর সংখ্যা সেভ হয়েছে।", true);
+        if (SB.getVisits) SB.getVisits().then(function (n) {
+          var box = $("visitorsBox"), num = $("visitorsCount");
+          if (num) num.textContent = toBn(parseInt(n, 10) || 0);
+          if (box) box.hidden = false;
+        }).catch(function () {});
+      }).catch(function () { admMsg("সেভ হয়নি — আবার চেষ্টা করুন।", false); });
+    });
     if ($("dashUpload")) $("dashUpload").addEventListener("click", function () {
       var t = document.querySelector('[data-ptab="photos"]'); if (t) t.click();
     });
@@ -847,6 +861,9 @@
   }
   function renderAdmin() {
     renderAdmPhotos(); renderAdmNotices(); renderAdmGreet(); renderDashboard();
+    if ($("admBaseVisits") && SB_ON && SB.getStats) {
+      SB.getStats().then(function (s) { $("admBaseVisits").value = (s && s.base_visits) || 0; }).catch(function () {});
+    }
   }
   function renderDashboard() {
     var allPh = DATA.photos || {}, total = Object.keys(allPh).length, live = 0, arch = 0;
