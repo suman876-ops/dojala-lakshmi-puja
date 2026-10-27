@@ -379,7 +379,12 @@
   <div class="panel" style="width:min(430px,96vw)">
     <div class="panel-head"><h3>অ্যাডমিন লগইন</h3><button class="icon-btn" data-close="loginModal" aria-label="বন্ধ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="panel-body">
-      <div class="field"><label for="admPass">পাসওয়ার্ড</label><input id="admPass" type="password" placeholder="পাসওয়ার্ড লিখুন" autocomplete="current-password"></div>
+      <div class="field"><label for="admPass">পাসওয়ার্ড</label>
+        <div class="pass-wrap">
+          <input id="admPass" type="password" placeholder="পাসওয়ার্ড লিখুন" autocomplete="current-password">
+          <button type="button" class="pass-eye" id="passEye" aria-label="পাসওয়ার্ড দেখুন" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
       <div class="panel-msg" id="loginMsg"></div>
       <button class="btn btn-gold" id="loginBtn" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>প্রবেশ করুন</button>
       <p class="hint" style="margin-top:12px">শুধুমাত্র কমিটির অনুমোদিত সদস্যের জন্য।</p>
