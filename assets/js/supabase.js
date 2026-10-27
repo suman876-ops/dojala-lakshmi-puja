@@ -110,8 +110,25 @@ window.SB = (function () {
     return client.from("visitor_photos").delete().eq("id", id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------------- online presence ---------------- */
+  var presenceCh = null, presenceUid = "u" + Math.random().toString(36).slice(2, 10);
+  function presence(onChange) {
+    try {
+      if (presenceCh) { try { client.removeChannel(presenceCh); } catch (e) {} presenceCh = null; }
+      presenceCh = client.channel("online", { config: { presence: { key: presenceUid } } });
+      presenceCh.on("presence", { event: "sync" }, function () {
+        var st = presenceCh.presenceState() || {};
+        try { onChange(Object.keys(st).length); } catch (e) {}
+      });
+      presenceCh.subscribe(function (status) {
+        if (status === "SUBSCRIBED") { try { presenceCh.track({ at: Date.now() }); } catch (e) {} }
+      });
+      return presenceCh;
+    } catch (e) { return null; }
+  }
+
   return {
-    configured: configured, load: load,
+    configured: configured, load: load, presence: presence,
     signIn: signIn, signOut: signOut, currentUser: currentUser, upload: upload,
     listPhotos: listPhotos, addPhoto: addPhoto, updatePhoto: updatePhoto, deletePhoto: deletePhoto,
     listAnnouncements: listAnnouncements, addAnnouncement: addAnnouncement, deleteAnnouncement: deleteAnnouncement,
