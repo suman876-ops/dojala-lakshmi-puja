@@ -1011,24 +1011,8 @@
     setTimeout(hideLoader, 300);
   }
 
-  function initViewToggle() {
-    var b = $("viewToggle"); if (!b) return;
-    var cur = document.documentElement.getAttribute("data-view") || "mobile";
-    b.textContent = cur === "desktop" ? "মোবাইল ভিউ" : "ডেস্কটপ ভিউ";
-    b.addEventListener("click", function () {
-      var next = (document.documentElement.getAttribute("data-view") === "desktop") ? "mobile" : "desktop";
-      try { localStorage.setItem("dojala_view", next); } catch (e) {}
-      document.documentElement.setAttribute("data-view", next);
-      var m = $("vpMeta");
-      if (m) m.setAttribute("content", next === "desktop" ? "width=1200" : "width=device-width, initial-scale=1.0");
-      b.textContent = next === "desktop" ? "মোবাইল ভিউ" : "ডেস্কটপ ভিউ";
-      setTimeout(function () { location.reload(); }, 80);
-    });
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     bootCounter();
-    initViewToggle();
     embers(); parallax(); nav(); clock(); events();
     loadData();
     if (sbReady()) initSB(); else bootState.sb = true;
