@@ -636,7 +636,20 @@
   function adminEvents() {
     if ($("adminOpen")) $("adminOpen").addEventListener("click", function () {
       if (sessionStorage.getItem("dojala_admin") === "1") openAdmin();
-      else { $("admPass").value = ""; $("loginMsg").className = "panel-msg"; openModal("loginModal"); setTimeout(function () { $("admPass").focus(); }, 80); }
+      else {
+        $("admPass").value = ""; $("admPass").type = "password";
+        if ($("passEye")) { $("passEye").classList.remove("on"); $("passEye").setAttribute("aria-pressed", "false"); $("passEye").setAttribute("aria-label", "পাসওয়ার্ড দেখুন"); }
+        $("loginMsg").className = "panel-msg"; openModal("loginModal"); setTimeout(function () { $("admPass").focus(); }, 80);
+      }
+    });
+    if ($("passEye")) $("passEye").addEventListener("click", function () {
+      var i = $("admPass"); if (!i) return;
+      var show = i.type === "password";
+      i.type = show ? "text" : "password";
+      this.classList.toggle("on", show);
+      this.setAttribute("aria-pressed", show ? "true" : "false");
+      this.setAttribute("aria-label", show ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন");
+      try { i.focus(); } catch (e) {}
     });
     if ($("loginBtn")) $("loginBtn").addEventListener("click", function () {
       if (SB_ON) {
