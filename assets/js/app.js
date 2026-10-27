@@ -643,6 +643,21 @@
         qsa("[data-pbody]").forEach(function (x) { x.hidden = x.dataset.pbody !== b.dataset.ptab; });
       });
     });
+    if ($("admSearch")) $("admSearch").addEventListener("input", function () {
+      admQuery = this.value.trim().toLowerCase(); renderAdmPhotos();
+    });
+    if ($("dashUpload")) $("dashUpload").addEventListener("click", function () {
+      var t = document.querySelector('[data-ptab="photos"]'); if (t) t.click();
+    });
+    if ($("dashDlAll")) $("dashDlAll").addEventListener("click", function () {
+      var d = $("dlAll"); if (d) d.click();
+    });
+    if ($("dashLogout")) $("dashLogout").addEventListener("click", function () {
+      try { sessionStorage.removeItem("dojala_admin"); } catch (e) {}
+      try { if (SB.signOut) SB.signOut(); } catch (e) {}
+      var m = $("adminModal"); if (m) m.classList.remove("open");
+      toast("লগআউট হয়েছে।");
+    });
 
     var admFiles = [];
     function renderAdmPreview() {
@@ -802,22 +817,49 @@
     Object.keys(DATA.photos || {}).forEach(function (id) { if (!used[id]) delete DATA.photos[id]; });
   }
   function renderAdmin() {
-    renderAdmPhotos(); renderAdmNotices(); renderAdmGreet();
+    renderAdmPhotos(); renderAdmNotices(); renderAdmGreet(); renderDashboard();
   }
+  function renderDashboard() {
+    var allPh = DATA.photos || {}, total = Object.keys(allPh).length, live = 0, arch = 0;
+    Object.keys(allPh).forEach(function (id) { if ((allPh[id].tagType || "") === "live") live++; else arch++; });
+    if ($("dashPhotos")) $("dashPhotos").textContent = toBn(total);
+    if ($("dashThisYear")) $("dashThisYear").textContent = toBn(live);
+    if ($("dashOld")) $("dashOld").textContent = toBn(arch);
+    if ($("dashVisitor")) $("dashVisitor").textContent = toBn((DATA.visitorPhotos || []).length);
+    if ($("dashNotices")) $("dashNotices").textContent = toBn((DATA.announcements || []).length);
+    if ($("dashGreets")) $("dashGreets").textContent = toBn((DATA.greetings || []).length);
+    var rec = $("dashRecent");
+    if (rec) {
+      var ids = [];
+      try { ids = galleryIds("all").slice(0, 6); } catch (e) { ids = Object.keys(allPh).slice(0, 6); }
+      if (!ids.length) ids = Object.keys(allPh).slice(0, 6);
+      try {
+        rec.innerHTML = ids.length ? ids.map(function (id) {
+          var p = ph(id);
+          return '<figure class="dash-thumb"><img src="' + esc(p.src) + '" alt="" loading="lazy"><figcaption>' + esc(p.caption || "ছবি") + "</figcaption></figure>";
+        }).join("") : '<p class="hint">এখনো কোনো ছবি নেই।</p>';
+      } catch (e) { rec.innerHTML = '<p class="hint">ছবি দেখানো যায়নি।</p>'; }
+    }
+  }
+  var admQuery = "";
   function renderAdmPhotos() {
     var el = $("admPhotoList"); if (!el) return;
+    var q = admQuery;
     var cats = [["gallery.puja", "গ্রামের পূজার ছবি"], ["gallery.committee", "কমিটির ছবি"]];
     Object.keys(DATA.years || {}).forEach(function (y) { cats.push(["year." + y, "ছবি — " + toBn(y)]); });
     var html = "";
     cats.forEach(function (c) {
       var arr = admListFor(c[0]); if (!arr || !arr.length) return;
-      html += '<li style="background:none;padding:9px 4px 2px;color:var(--gold3);font-size:.85rem">' + esc(c[1]) + "</li>";
+      var rows = "";
       arr.forEach(function (id, i) {
         var p = ph(id);
-        html += '<li><img src="' + esc(p.src) + '" alt=""><span class="grow">' + esc(p.caption || "(ক্যাপশন নেই)") + "<small>" + esc(p.credit || "") + '</small></span><button class="del" data-delcat="' + c[0] + '" data-deli="' + i + '">✕</button></li>';
+        if (q && (p.caption || "").toLowerCase().indexOf(q) < 0) return;
+        rows += '<li><img src="' + esc(p.src) + '" alt=""><span class="grow">' + esc(p.caption || "(ক্যাপশন নেই)") + "<small>" + esc(p.credit || "") + '</small></span><button class="del" data-delcat="' + c[0] + '" data-deli="' + i + '">✕</button></li>';
       });
+      if (!rows) return;
+      html += '<li style="background:none;padding:9px 4px 2px;color:var(--gold3);font-size:.85rem">' + esc(c[1]) + "</li>" + rows;
     });
-    el.innerHTML = html || '<li style="background:none;color:var(--dim)">এখনো কোনো ছবি নেই।</li>';
+    el.innerHTML = html || ('<li style="background:none;color:var(--dim)">' + (q ? "এই নামে কোনো ছবি নেই।" : "এখনো কোনো ছবি নেই।") + "</li>");
     if ($("admPhotoCount")) $("admPhotoCount").textContent = toBn(Object.keys(DATA.photos || {}).length);
   }
   function renderAdmNotices() {
