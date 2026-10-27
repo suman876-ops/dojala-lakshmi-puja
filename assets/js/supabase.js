@@ -110,6 +110,11 @@ window.SB = (function () {
     return client.from("visitor_photos").delete().eq("id", id).then(function (r) { if (r.error) throw r.error; });
   }
 
+  /* ---------------- visitor counter ---------------- */
+  function bumpVisit() {
+    return client.rpc("bump_visit").then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
+
   /* ---------------- online presence ---------------- */
   var presenceCh = null, presenceUid = "u" + Math.random().toString(36).slice(2, 10);
   function presence(onChange) {
@@ -128,7 +133,7 @@ window.SB = (function () {
   }
 
   return {
-    configured: configured, load: load, presence: presence,
+    configured: configured, load: load, presence: presence, bumpVisit: bumpVisit,
     signIn: signIn, signOut: signOut, currentUser: currentUser, upload: upload,
     listPhotos: listPhotos, addPhoto: addPhoto, updatePhoto: updatePhoto, deletePhoto: deletePhoto,
     listAnnouncements: listAnnouncements, addAnnouncement: addAnnouncement, deleteAnnouncement: deleteAnnouncement,
