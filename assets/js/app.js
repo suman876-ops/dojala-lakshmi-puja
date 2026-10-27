@@ -974,23 +974,26 @@
     return Promise.all([SB.listPhotos(), SB.listAnnouncements(), SB.listGreetings(), SB.listVisitor()])
       .then(function (r) { applySB(r[0], r[1], r[2], r[3]); renderAll(); renderAdmin(); bootState.data = true; bootCheck(); });
   }
-  function initOnline() {
-    if (!SB_ON || !SB.presence) return;
-    var pill = $("onlinePill"), num = $("onlineCount");
-    try {
-      SB.presence(function (n) {
-        if (!pill) return;
-        if (num) num.textContent = toBn(Math.max(1, n || 0));
-        pill.hidden = false;
-      });
-    } catch (e) {}
+  function initVisitors() {
+    var box = $("visitorsBox"), num = $("visitorsCount");
+    if (!box) return;
+    var show = function (n) { if (num) num.textContent = toBn(n); box.hidden = false; };
+    var cached = null;
+    try { cached = sessionStorage.getItem("dojala_visits"); } catch (e) {}
+    if (cached !== null && cached !== "") { show(parseInt(cached, 10) || 0); return; }
+    if (!SB_ON || !SB.bumpVisit) return;
+    SB.bumpVisit().then(function (n) {
+      var v = parseInt(n, 10); if (isNaN(v)) v = 0;
+      try { sessionStorage.setItem("dojala_visits", v); } catch (e) {}
+      show(v);
+    }).catch(function () {});
   }
   function initSB() {
     return SB.load().then(function (ok) {
       if (!ok) return;
       SB_ON = true;
       return refreshFromSB();
-    }).catch(function () {}).then(function () { bootState.sb = true; bootCheck(); if (SB_ON) initOnline(); });
+    }).catch(function () {}).then(function () { bootState.sb = true; bootCheck(); if (SB_ON) initVisitors(); });
   }
 
   /* ---------- boot ---------- */
