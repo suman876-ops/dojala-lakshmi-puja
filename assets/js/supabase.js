@@ -70,6 +70,9 @@ window.SB = (function () {
   function addPhoto(row) {
     return client.from("photos").insert(row).select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
   }
+  function updatePhoto(id, patch) {
+    return client.from("photos").update(patch).eq("id", id).then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
   function deletePhoto(id) {
     return client.from("photos").delete().eq("id", id).then(function (r) { if (r.error) throw r.error; });
   }
@@ -110,7 +113,7 @@ window.SB = (function () {
   return {
     configured: configured, load: load,
     signIn: signIn, signOut: signOut, currentUser: currentUser, upload: upload,
-    listPhotos: listPhotos, addPhoto: addPhoto, deletePhoto: deletePhoto,
+    listPhotos: listPhotos, addPhoto: addPhoto, updatePhoto: updatePhoto, deletePhoto: deletePhoto,
     listAnnouncements: listAnnouncements, addAnnouncement: addAnnouncement, deleteAnnouncement: deleteAnnouncement,
     listGreetings: listGreetings, addGreeting: addGreeting, deleteGreeting: deleteGreeting,
     listVisitor: listVisitor, addVisitor: addVisitor, deleteVisitor: deleteVisitor
