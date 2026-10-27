@@ -463,6 +463,22 @@
     if ($("lbClose")) $("lbClose").addEventListener("click", function () { $("lightbox").classList.remove("open"); });
     if ($("lbPrev")) $("lbPrev").addEventListener("click", function () { lbI = (lbI - 1 + lb.length) % lb.length; showLb(); });
     if ($("lbNext")) $("lbNext").addEventListener("click", function () { lbI = (lbI + 1) % lb.length; showLb(); });
+    var lbTouch = null, lbBox = $("lightbox");
+    if (lbBox) {
+      lbBox.addEventListener("touchstart", function (e) {
+        if (!lbBox.classList.contains("open") || !e.touches || !e.touches.length) return;
+        lbTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() };
+      }, { passive: true });
+      lbBox.addEventListener("touchend", function (e) {
+        if (!lbTouch || !lb.length) { lbTouch = null; return; }
+        var t = e.changedTouches && e.changedTouches[0]; if (!t) { lbTouch = null; return; }
+        var dx = t.clientX - lbTouch.x, dy = t.clientY - lbTouch.y, dt = Date.now() - lbTouch.t;
+        lbTouch = null;
+        if (dt > 800 || Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+        lbI = dx < 0 ? (lbI + 1) % lb.length : (lbI - 1 + lb.length) % lb.length;
+        showLb();
+      }, { passive: true });
+    }
     if ($("lbDl")) $("lbDl").addEventListener("click", function () {
       var p = lb[lbI]; if (!p || !p.src) return;
       toast("ছবি নামানো হচ্ছে...");
