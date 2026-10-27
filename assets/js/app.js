@@ -485,10 +485,10 @@
       fetchBlob(p.src).then(function (b) { saveBlob(b, "dojala-photo-" + (lbI + 1) + "." + extOf(p.src)); })
         .catch(function () { try { window.open(p.src, "_blank"); } catch (e) {} });
     });
-    if ($("dlAll")) $("dlAll").addEventListener("click", function () {
+    function downloadAllPhotos() {
       var arr = resolve(galleryIds("all")).concat(DATA.visitorPhotos || []);
       if (!arr.length) return toast("এখনো কোনো ছবি নেই।");
-      var btn = this; btn.disabled = true;
+      var btn = $("dashDlAll"); if (btn) btn.disabled = true;
       toast("সব ছবি নামানো হচ্ছে... একটু অপেক্ষা করুন।");
       loadJSZip().then(function (JSZip) {
         var zip = new JSZip(), chain = Promise.resolve(), ok = 0;
@@ -506,8 +506,8 @@
         saveBlob(blob, "dojala-photos.zip");
         toast(toBn(arr.length) + "টি ছবি ডাউনলোড হয়েছে।");
       }).catch(function () { toast("ডাউনলোড ব্যর্থ হয়েছে।"); })
-        .then(function () { btn.disabled = false; });
-    });
+        .then(function () { if (btn) btn.disabled = false; });
+    }
     document.addEventListener("keydown", function (e) {
       if (!$("lightbox").classList.contains("open")) return;
       if (e.key === "Escape") $("lightbox").classList.remove("open");
@@ -678,9 +678,7 @@
     if ($("dashUpload")) $("dashUpload").addEventListener("click", function () {
       var t = document.querySelector('[data-ptab="photos"]'); if (t) t.click();
     });
-    if ($("dashDlAll")) $("dashDlAll").addEventListener("click", function () {
-      var d = $("dlAll"); if (d) d.click();
-    });
+    if ($("dashDlAll")) $("dashDlAll").addEventListener("click", function () { downloadAllPhotos(); });
     if ($("dashLogout")) $("dashLogout").addEventListener("click", function () {
       try { sessionStorage.removeItem("dojala_admin"); } catch (e) {}
       try { if (SB.signOut) SB.signOut(); } catch (e) {}
@@ -767,6 +765,8 @@
       });
     });
     if ($("admPhotoList")) $("admPhotoList").addEventListener("click", function (e) {
+      var eb = e.target.closest("[data-editid]");
+      if (eb) { startCaptionEdit(eb.getAttribute("data-editid")); return; }
       var b = e.target.closest("[data-delcat]"); if (!b) return;
       if (!confirm("এই ছবিটি মুছে ফেলবেন?")) return;
       var arr = admListFor(b.dataset.delcat), did = arr[+b.dataset.deli];
@@ -883,13 +883,45 @@
       arr.forEach(function (id, i) {
         var p = ph(id);
         if (q && (p.caption || "").toLowerCase().indexOf(q) < 0) return;
-        rows += '<li><img src="' + esc(p.src) + '" alt=""><span class="grow">' + esc(p.caption || "(ক্যাপশন নেই)") + "<small>" + esc(p.credit || "") + '</small></span><button class="del" data-delcat="' + c[0] + '" data-deli="' + i + '">✕</button></li>';
+        rows += '<li data-rowid="' + id + '"><img src="' + esc(p.src) + '" alt=""><span class="grow">' + esc(p.caption || "(ক্যাপশন নেই)") + "<small>" + esc(p.credit || "") + '</small></span><button class="edit" data-editid="' + id + '" title="ক্যাপশন বদলান">✎</button><button class="del" data-delcat="' + c[0] + '" data-deli="' + i + '">✕</button></li>';
       });
       if (!rows) return;
       html += '<li style="background:none;padding:9px 4px 2px;color:var(--gold3);font-size:.85rem">' + esc(c[1]) + "</li>" + rows;
     });
     el.innerHTML = html || ('<li style="background:none;color:var(--dim)">' + (q ? "এই নামে কোনো ছবি নেই।" : "এখনো কোনো ছবি নেই।") + "</li>");
     if ($("admPhotoCount")) $("admPhotoCount").textContent = toBn(Object.keys(DATA.photos || {}).length);
+  }
+  function startCaptionEdit(id) {
+    var el = $("admPhotoList"); if (!el) return;
+    var row = el.querySelector('[data-rowid="' + id + '"]'); if (!row) return;
+    var span = row.querySelector(".grow"); if (!span) return;
+    var cur = (ph(id).caption || "");
+    span.innerHTML = '<input class="cap-input" type="text" maxlength="60" value="' + esc(cur) + '" placeholder="ক্যাপশন লিখুন">' +
+      '<span class="cap-acts"><button class="cap-save" type="button">✓</button><button class="cap-cancel" type="button">✕</button></span>';
+    var inp = span.querySelector("input");
+    if (inp) { inp.focus(); try { inp.select(); } catch (e) {} }
+    var sv = span.querySelector(".cap-save"), cn = span.querySelector(".cap-cancel");
+    if (sv) sv.addEventListener("click", function () { saveCaption(id, inp ? inp.value : ""); });
+    if (cn) cn.addEventListener("click", function () { renderAdmPhotos(); });
+    if (inp) inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); saveCaption(id, inp.value); }
+      else if (e.key === "Escape") { renderAdmPhotos(); }
+    });
+  }
+  function saveCaption(id, val) {
+    var v = String(val || "").trim().slice(0, 60);
+    var apply = function () {
+      DATA.photos[id] = DATA.photos[id] || { src: "", caption: "" };
+      DATA.photos[id].caption = v;
+      renderAll(); renderAdmin();
+      admMsg("ক্যাপশন আপডেট হয়েছে।", true);
+    };
+    if (SB_ON && SB.updatePhoto) {
+      SB.updatePhoto(id, { caption: v }).then(apply)
+        .catch(function () { admMsg("ক্যাপশন আপডেট হয়নি — আবার চেষ্টা করুন।", false); });
+    } else {
+      apply(); try { save(); } catch (e) {}
+    }
   }
   function renderAdmNotices() {
     var el = $("admNoticeList"); if (!el) return;
