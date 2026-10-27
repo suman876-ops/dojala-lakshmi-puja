@@ -398,14 +398,36 @@
     <div class="panel-body">
       <div class="panel-msg" id="admMsg"></div>
       <div class="panel-tabs">
-        <button class="ptab active" data-ptab="photos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>ছবি</button>
+        <button class="ptab active" data-ptab="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>ড্যাশবোর্ড</button>
+        <button class="ptab" data-ptab="photos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg>ছবি</button>
         <button class="ptab" data-ptab="notices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>ঘোষণা</button>
         <button class="ptab" data-ptab="greet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>শুভেচ্ছা</button>
         <button class="ptab" data-ptab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>সেটিংস</button>
       </div>
 
+      <!-- ---------- ড্যাশবোর্ড ---------- -->
+      <div class="ptab-body" data-pbody="dash">
+        <p class="adm-intro">স্বাগতম! এখানে সাইটের এক নজরে হিসাব ও দ্রুত কাজের বোতাম।</p>
+        <div class="dash-grid">
+          <div class="dash-card"><b id="dashPhotos">০</b><span>মোট ছবি</span></div>
+          <div class="dash-card live"><b id="dashThisYear">০</b><span>এই বছর</span></div>
+          <div class="dash-card arch"><b id="dashOld">০</b><span>পুরনো স্মৃতি</span></div>
+          <div class="dash-card"><b id="dashVisitor">০</b><span>দর্শকের ছবি</span></div>
+          <div class="dash-card"><b id="dashNotices">০</b><span>ঘোষণা</span></div>
+          <div class="dash-card"><b id="dashGreets">০</b><span>শুভেচ্ছা</span></div>
+        </div>
+        <div class="dash-actions">
+          <button class="btn btn-gold" id="dashUpload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>নতুন ছবি আপলোড</button>
+          <button class="btn btn-line" id="dashDlAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>সব ছবি ডাউনলোড</button>
+          <button class="btn btn-line" id="dashLogout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>লগআউট</button>
+        </div>
+        <div class="adm-sep"></div>
+        <h4 class="adm-h4">গ্যালারির কিছু ছবি</h4>
+        <div class="dash-recent" id="dashRecent"></div>
+      </div>
+
       <!-- ---------- ছবি ---------- -->
-      <div class="ptab-body" data-pbody="photos">
+      <div class="ptab-body" data-pbody="photos" hidden>
         <p class="adm-intro">নিচের <b>৩টি ধাপ</b> পূরণ করে শেষে <b>“ছবি আপলোড করুন”</b> বোতামে চাপ দিন — তখনই ছবি সাইটে যোগ হবে ও সবার কাছে দেখা যাবে।</p>
 
         <div class="adm-step">
@@ -454,6 +476,7 @@
         <div class="up-prog" id="admProg" hidden><span class="up-prog-bar"><i id="admProgBar"></i></span><b id="admProgPct">০%</b></div>
 
         <div class="adm-sep"></div>
+        <input class="adm-search" id="admSearch" type="text" placeholder="ক্যাপশন দিয়ে ছবি খুঁজুন..." autocomplete="off">
         <h4 class="adm-h4">বর্তমান ছবি <span class="count" id="admPhotoCount"></span></h4>
         <ul class="adm-list" id="admPhotoList"></ul>
       </div>
