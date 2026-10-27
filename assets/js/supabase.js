@@ -114,6 +114,15 @@ window.SB = (function () {
   function bumpVisit() {
     return client.rpc("bump_visit").then(function (r) { if (r.error) throw r.error; return r.data; });
   }
+  function getVisits() {
+    return client.rpc("get_visits").then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
+  function getStats() {
+    return client.from("site_stats").select("visits, base_visits").eq("id", 1).single().then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
+  function setBaseVisits(n) {
+    return client.from("site_stats").update({ base_visits: n }).eq("id", 1).then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
 
   /* ---------------- online presence ---------------- */
   var presenceCh = null, presenceUid = "u" + Math.random().toString(36).slice(2, 10);
@@ -134,6 +143,7 @@ window.SB = (function () {
 
   return {
     configured: configured, load: load, presence: presence, bumpVisit: bumpVisit,
+    getVisits: getVisits, getStats: getStats, setBaseVisits: setBaseVisits,
     signIn: signIn, signOut: signOut, currentUser: currentUser, upload: upload,
     listPhotos: listPhotos, addPhoto: addPhoto, updatePhoto: updatePhoto, deletePhoto: deletePhoto,
     listAnnouncements: listAnnouncements, addAnnouncement: addAnnouncement, deleteAnnouncement: deleteAnnouncement,
