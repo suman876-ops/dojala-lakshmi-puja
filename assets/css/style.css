@@ -576,6 +576,22 @@ footer.light .addr{margin-top:14px;color:var(--ldim);font-size:.9rem;letter-spac
 .adm-sep{height:1px;background:var(--line);margin:26px 0}
 .adm-h4{font-family:var(--body);font-size:1rem;color:var(--gold3);margin:0 0 14px;display:flex;align-items:center;gap:9px;font-weight:600}
 .adm-h4 .count{font-size:.76rem;color:var(--dim);background:rgba(255,255,255,.06);border:1px solid var(--line);padding:2px 10px;border-radius:20px;font-family:var(--body)}
+/* ---- admin dashboard ---- */
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:14px 0 18px}
+.dash-card{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center}
+.dash-card b{display:block;font-family:var(--disp);font-size:1.55rem;color:var(--gold3);line-height:1.15}
+.dash-card span{display:block;margin-top:5px;font-size:.75rem;color:var(--dim)}
+.dash-card.live{border-color:rgba(193,18,28,.32)}
+.dash-card.live b{color:var(--red)}
+.dash-card.arch{border-color:rgba(176,128,40,.42)}
+.dash-actions{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 6px}
+.dash-actions .btn{flex:1 1 auto;justify-content:center;padding:12px 16px;font-size:.9rem}
+.dash-recent{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:10px}
+.dash-thumb{margin:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#ece1c9}
+.dash-thumb img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.dash-thumb figcaption{font-size:.7rem;color:var(--dim);padding:6px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-search{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.78);color:var(--ink);font-family:var(--body);font-size:.92rem;margin:2px 0 12px}
+.adm-search:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,200,105,.16)}
 
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
