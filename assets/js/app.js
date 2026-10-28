@@ -1025,8 +1025,17 @@
     setTimeout(hideLoader, 300);
   }
 
+  function initSW() {
+    try {
+      if (!("serviceWorker" in navigator)) return;
+      if (location.protocol !== "https:") return;
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    } catch (e) {}
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     bootCounter();
+    initSW();
     embers(); parallax(); nav(); clock(); events();
     loadData();
     if (sbReady()) initSB(); else bootState.sb = true;
