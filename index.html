@@ -513,13 +513,12 @@
       <!-- ---------- সেটিংস ---------- -->
       <div class="ptab-body" data-pbody="settings" hidden>
         <p class="adm-intro">সাইটের সাধারণ সেটিংস।</p>
-        <div class="field"><label>নতুন অ্যাডমিন পাসওয়ার্ড</label><input id="admNewPass" type="text" placeholder="নতুন পাসওয়ার্ড" maxlength="40"></div>
-        <button class="btn btn-gold" id="admSaveSettings">সেটিংস সংরক্ষণ করুন</button>
+        <div class="field"><label>নতুন অ্যাডমিন পাসওয়ার্ড</label><input id="admNewPass" type="password" placeholder="নতুন পাসওয়ার্ড (অন্তত ৬ অক্ষর)" maxlength="40" autocomplete="new-password"><p class="hint">এখানে নতুন পাসওয়ার্ড দিয়ে সেভ করলে সেটাই পরেরবারের লগইন পাসওয়ার্ড হয়ে যাবে।</p></div>
+        <button class="btn btn-gold" id="admSaveSettings" style="width:100%;justify-content:center">পাসওয়ার্ড বদলান</button>
         <div class="adm-sep"></div>
         <h4 class="adm-h4">ব্যাকআপ (data.json)</h4>
         <p class="hint">লোকাল মোডে সব পরিবর্তনসহ <b>data.json</b> নামিয়ে সাইটের ফোল্ডারে রাখতে পারেন। (Supabase চালু থাকলে এটির দরকার নেই।)</p>
         <button class="btn btn-red" id="admExport">data.json ডাউনলোড করুন</button>
-        <button class="btn btn-ghost" id="admReset" style="margin-left:8px">ডিফল্টে ফিরুন</button>
       </div>
     </div>
   </div>
