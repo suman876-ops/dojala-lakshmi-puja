@@ -815,13 +815,14 @@
     });
     if ($("admSaveSettings")) $("admSaveSettings").addEventListener("click", function () {
       var p = $("admNewPass").value.trim();
-      if (p) DATA.adminPassword = p;
-      save(); admMsg("সেটিংস সংরক্ষিত হয়েছে।", true); $("admNewPass").value = "";
-    });
-    if ($("admReset")) $("admReset").addEventListener("click", function () {
-      if (!confirm("সব পরিবর্তন মুছে ডিফল্টে ফিরবেন?")) return;
-      localStorage.removeItem(LS); DATA = JSON.parse(JSON.stringify(DEFAULT));
-      renderAll(); renderAdmin(); admMsg("ডিফল্টে ফিরে এসেছে।", true);
+      if (!p) { admMsg("নতুন পাসওয়ার্ড লিখুন।", false); return; }
+      if (p.length < 6) { admMsg("পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে।", false); return; }
+      if (!SB_ON || !SB.updatePassword) { admMsg("ডেটাবেসে সংযোগ নেই — পাসওয়ার্ড বদলানো যায়নি।", false); return; }
+      admMsg("পাসওয়ার্ড বদলানো হচ্ছে...", true);
+      SB.updatePassword(p).then(function () {
+        $("admNewPass").value = "";
+        admMsg("নতুন পাসওয়ার্ড সেভ হয়েছে। পরেরবার এই পাসওয়ার্ডেই লগইন করুন।", true);
+      }).catch(function () { admMsg("পাসওয়ার্ড বদলানো যায়নি — আবার চেষ্টা করুন।", false); });
     });
     if ($("admExport")) $("admExport").addEventListener("click", function () {
       DATA.version = (DATA.version || 1) + 1;
