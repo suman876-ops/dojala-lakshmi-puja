@@ -39,6 +39,9 @@ window.SB = (function () {
     });
   }
   function signOut() { return client.auth.signOut().catch(function () {}); }
+  function updatePassword(pw) {
+    return client.auth.updateUser({ password: pw }).then(function (r) { if (r.error) throw r.error; return r.data; });
+  }
   function currentUser() {
     return client.auth.getUser().then(function (r) { return r.data ? r.data.user : null; }).catch(function () { return null; });
   }
@@ -144,7 +147,7 @@ window.SB = (function () {
   return {
     configured: configured, load: load, presence: presence, bumpVisit: bumpVisit,
     getVisits: getVisits, getStats: getStats, setBaseVisits: setBaseVisits,
-    signIn: signIn, signOut: signOut, currentUser: currentUser, upload: upload,
+    signIn: signIn, signOut: signOut, updatePassword: updatePassword, currentUser: currentUser, upload: upload,
     listPhotos: listPhotos, addPhoto: addPhoto, updatePhoto: updatePhoto, deletePhoto: deletePhoto,
     listAnnouncements: listAnnouncements, addAnnouncement: addAnnouncement, deleteAnnouncement: deleteAnnouncement,
     listGreetings: listGreetings, addGreeting: addGreeting, deleteGreeting: deleteGreeting,
