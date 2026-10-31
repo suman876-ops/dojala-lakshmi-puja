@@ -52,9 +52,11 @@ window.SB = (function () {
     var name = (file && file.name) || "image.jpg";
     var ext = (name.split(".").pop() || "jpg").toLowerCase();
     if (!/^(jpe?g|png|webp|gif)$/.test(ext)) ext = "jpg";
+    var MIME = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+    var mime = MIME[ext] || "image/jpeg";
     var path = (prefix || "uploads") + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
     return client.storage.from(B)
-      .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type || "image/jpeg" })
+      .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: mime })
       .then(function (r) {
         if (r.error) throw r.error;
         return client.storage.from(B).getPublicUrl(path).data.publicUrl;
