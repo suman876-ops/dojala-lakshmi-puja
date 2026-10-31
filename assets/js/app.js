@@ -579,6 +579,7 @@
         pr.start(); toast("আপলোড হচ্ছে...");
         shrinkBlobSafe(file)
           .then(function (out) {
+            if (!out || out.size > 4.5 * 1024 * 1024) { var be = new Error("too-big"); be.tooBig = true; throw be; }
             return SB.upload(out, "visitor", "visitor").then(function (url) {
               return SB.addVisitor(n, url).then(function (row) {
                 DATA.visitorPhotos = DATA.visitorPhotos || [];
@@ -591,7 +592,7 @@
             });
           })
           .then(function () { pr.done(); clearUpPreview(); toast("ছবি যোগ হয়েছে! ধন্যবাদ।"); return refreshFromSB(); })
-          .catch(function () { pr.fail(); toast("আপলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"); })
+          .catch(function (e) { pr.fail(); toast(e && e.tooBig ? "ছবিটি অনেক বড় — ছোট ছবি দিয়ে চেষ্টা করুন।" : "আপলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"); })
           .then(function () { btn.disabled = false; btn.innerHTML = label; });
         return;
       }
@@ -719,11 +720,12 @@
         var pr = progressCtl("admProg", "admProgBar", "admProgPct");
         var run = function () {
           pr.start();
-          var chain = Promise.resolve(), added = [];
+          var chain = Promise.resolve(), added = [], skipped = 0;
           files.forEach(function (f, i) {
             chain = chain.then(function () {
               admMsg("আপলোড হচ্ছে... (" + toBn(i + 1) + "/" + toBn(files.length) + ")", true);
               return shrinkBlobSafe(f).then(function (out) {
+                if (!out || out.size > 7.5 * 1024 * 1024) { skipped++; return null; }
                 return SB.upload(out, "gallery").then(function (url) {
                   return SB.addPhoto({ url: url, caption: cap || "", tag: "এই বছর", tag_type: "live", category: category, year: year, sort: Date.now() + i });
                 });
@@ -741,7 +743,7 @@
             if (added.length) { try { renderAll(); } catch (e) {} }
             pr.done();
             admFiles = []; renderAdmPreview(); $("admCap").value = "";
-            admMsg(toBn(files.length) + "টি ছবি যোগ হয়েছে।", true);
+            admMsg(toBn(added.length) + "টি ছবি যোগ হয়েছে।" + (skipped ? " " + toBn(skipped) + "টি ছবি খুব বড় হওয়ায় বাদ পড়েছে — ছোট ছবি দিয়ে চেষ্টা করুন।" : ""), true);
             return refreshFromSB();
           }).catch(function (e) { pr.fail(); admMsg("আপলোড ব্যর্থ: " + (e && e.message ? e.message : "") + "। আবার চেষ্টা করুন।", false); })
             .then(function () { btn.disabled = false; });
