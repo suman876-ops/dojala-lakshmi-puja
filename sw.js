@@ -5,7 +5,7 @@
      - images / audio   -> cache first (they never change under the same file name)
      - other origins (Supabase API, CDN) -> untouched
 */
-var VER = "dojala-v1";
+var VER = "dojala-v2";
 var SHELL = [
   "./",
   "./index.html",
