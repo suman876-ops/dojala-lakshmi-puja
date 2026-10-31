@@ -313,11 +313,14 @@
     r.onload = function () {
       var img = new Image();
       img.onload = function () {
-        var m = 1280, w = img.width, h = img.height;
+        var m = 1400, w = img.width, h = img.height;
         if (Math.max(w, h) > m) { var s = m / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
         var c = document.createElement("canvas"); c.width = w; c.height = h;
-        c.getContext("2d").drawImage(img, 0, 0, w, h);
-        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.76); } catch (e) { cb(file); }
+        var ctx = c.getContext("2d");
+        try { ctx.filter = "contrast(1.05) saturate(1.08) brightness(1.02)"; } catch (e) {}
+        ctx.drawImage(img, 0, 0, w, h);
+        try { ctx.filter = "none"; } catch (e) {}
+        try { c.toBlob(function (b) { cb(b || file); }, "image/jpeg", 0.82); } catch (e) { cb(file); }
       };
       img.onerror = function () { cb(file); };
       img.src = r.result;
